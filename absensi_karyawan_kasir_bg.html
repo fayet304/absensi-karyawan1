@@ -1,0 +1,198 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ABSENSI KARYAWAN KASIR</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 40px 20px;
+      background: url('https://images.unsplash.com/photo-1503264116251-35a269479413?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+  background-size: cover;
+      color: #fff;
+      overflow-x: hidden;
+    }
+    .dragon-bg {
+      position: fixed;
+      top: 0;
+      left: -100%;
+      width: 200%;
+      height: 100%;
+      background: url('https://i.ibb.co/k62mH7W/dragon-walking.gif') repeat-x;
+      background-size: contain;
+      animation: moveDragon 60s linear infinite;
+      z-index: -1;
+      opacity: 0.1;
+    }
+    @keyframes moveDragon {
+      from { left: -100%; }
+      to { left: 0%; }
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2rem;
+      text-shadow: 1px 1px 4px #000;
+    }
+    form, table {
+      margin: 0 auto;
+      width: 100%;
+      max-width: 650px;
+      backdrop-filter: blur(10px);
+      background: rgba(0, 0, 0, 0.5);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    }
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    button[type="submit"], #downloadBtn, #pulangBtn {
+      background-color: #00C9A7;
+      box-shadow: 0 0 10px #00C9A7;
+      color: white;
+      border: none;
+      transition: all 0.3s ease;
+    }
+    button:hover {
+      background-color: #00B89F;
+      box-shadow: 0 0 20px #00C9A7;
+    }
+    table {
+      margin-top: 30px;
+      border-collapse: collapse;
+      width: 100%;
+      border-radius: 15px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 14px;
+      border: 1px solid #ddd;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.1);
+    }
+    th {
+      background-color: rgba(76, 175, 80, 0.8);
+    }
+    tr:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    #downloadBtn {
+      display: block;
+      margin: 20px auto 10px auto;
+      padding: 12px 24px;
+    }
+  </style>
+</head>
+<body>
+  <div class="dragon-bg"></div>
+
+  <h1>ABSENSI KARYAWAN KASIR</h1>
+
+  <form id="absenForm">
+    <label>Nama:</label>
+    <input type="text" id="nama" placeholder="Masukkan Nama" required>
+
+    <label>NIK / ID:</label>
+    <input type="text" id="nik" placeholder="Masukkan NIK / ID" required>
+
+    <label>Keterangan:</label>
+    <select id="status">
+      <option value="Hadir">Hadir</option>
+      <option value="Izin">Izin</option>
+      <option value="Sakit">Sakit</option>
+    </select>
+
+    <button type="submit">Submit Absen Masuk</button>
+    <button type="button" id="pulangBtn">Absen Pulang</button>
+  </form>
+
+  <button id="downloadBtn">Download ke Excel</button>
+
+  <table id="absenTable">
+    <thead>
+      <tr>
+        <th>Nama</th>
+        <th>NIK</th>
+        <th>Waktu Masuk</th>
+        <th>Status</th>
+        <th>Waktu Pulang</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Data absensi akan muncul di sini -->
+    </tbody>
+  </table>
+
+  <script>
+    const form = document.getElementById('absenForm');
+    const tableBody = document.querySelector('#absenTable tbody');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const pulangBtn = document.getElementById('pulangBtn');
+    let lastRow = null;
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const nama = document.getElementById('nama').value.trim();
+      const nik = document.getElementById('nik').value.trim();
+      const status = document.getElementById('status').value;
+      const waktuMasuk = new Date().toLocaleString('id-ID');
+
+      if (!nama || !nik || /^\d+$/.test(nama)) {
+        alert('Nama atau NIK tidak valid!');
+        return;
+      }
+
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${nama}</td>
+        <td>${nik}</td>
+        <td>${waktuMasuk}</td>
+        <td>${status}</td>
+        <td>-</td>
+      `;
+      tableBody.appendChild(row);
+      lastRow = row;
+      form.reset();
+      alert('Data absen masuk berhasil ditambahkan!');
+    });
+
+    pulangBtn.addEventListener('click', function() {
+      if(lastRow){
+        const waktuPulang = new Date().toLocaleString('id-ID');
+        lastRow.cells[4].innerText = waktuPulang;
+        alert('Absen pulang berhasil dicatat!');
+      } else {
+        alert('Belum ada data absen masuk!');
+      }
+    });
+
+    downloadBtn.addEventListener('click', function () {
+      if(confirm("Yakin ingin mendownload data absensi?")){
+        let csv = 'Nama,NIK,Waktu Masuk,Status,Waktu Pulang\n';
+        const rows = document.querySelectorAll('table tr');
+        rows.forEach(row => {
+          const cols = row.querySelectorAll('td, th');
+          const rowData = [];
+          cols.forEach(col => rowData.push(col.innerText));
+          csv += rowData.join(',') + '\n';
+        });
+
+        const hiddenElement = document.createElement('a');
+        hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+        hiddenElement.target = '_blank';
+        hiddenElement.download = 'data_absensi.csv';
+        hiddenElement.click();
+      }
+    });
+  </script>
+</body>
+</html>
