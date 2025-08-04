@@ -2,217 +2,137 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ABSENSI KARYAWAN KASIR</title>
+  <title>Profil Pengguna</title>
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Segoe UI', sans-serif;
+      background: #ecf0f1;
       margin: 0;
-      padding: 40px 20px;
-      background: url('https://images.unsplash.com/photo-1503264116251-35a269479413?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
-      background-size: cover;
-      color: #fff;
-      overflow-x: hidden;
+      padding: 30px;
     }
-    .dragon-bg {
-      position: fixed;
-      bottom: 0;
-      left: -100%;
-      width: 300%;
-      height: 300px;
-      background: url('https://i.ibb.co/3f03Z0k/mahjong-dragon.gif') repeat-x;
-      background-size: contain;
-      animation: moveDragon 60s linear infinite, floatUpDown 4s ease-in-out infinite;
-      z-index: -1;
-      opacity: 0.25;
-      pointer-events: none;
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: #fff;
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
     }
-    @keyframes moveDragon {
-      from { left: -100%; }
-      to   { left: 0%; }
+
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 30px;
     }
-    @keyframes floatUpDown {
-      0%, 100% { transform: translateY(0); }
-      50%       { transform: translateY(-20px); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 40px;
     }
-    h1 { text-align: center; margin-bottom: 20px; font-size: 2rem; text-shadow: 1px 1px 4px #000; }
-    form, table {
-      margin: 0 auto;
-      width: 100%; max-width: 700px;
-      backdrop-filter: blur(10px);
-      background: rgba(0, 0, 0, 0.6);
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+
+    table th, table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    table th {
+      background-color: #3498db;
+      color: white;
+    }
+
+    table tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .form-group {
       margin-bottom: 20px;
     }
-    input, select, button {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
-    }
-    button[type="submit"], #downloadBtn {
-      background-color: #00C9A7;
-      box-shadow: 0 0 10px #00C9A7;
-      color: white;
-      border: none;
-      transition: all 0.3s ease;
-    }
-    button:hover { background-color: #00B89F; box-shadow: 0 0 20px #00C9A7; }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      border-radius: 15px;
-      overflow: hidden;
-    }
-    th, td {
-      padding: 14px;
-      border: 1px solid #ddd;
-      text-align: center;
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
-    }
-    th { background-color: rgba(76, 175, 80, 0.8); }
-    tr:hover { background-color: rgba(255, 255, 255, 0.2); }
-    .status-hijau { color: #2ecc71; font-weight: bold; }
-    .status-merah { color: #e74c3c; font-weight: bold; }
-    #downloadBtn {
+
+    label {
       display: block;
-      margin: 20px auto;
-      padding: 12px 24px;
+      font-weight: 600;
+      margin-bottom: 6px;
     }
+
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+
+    .submit-btn {
+      background: linear-gradient(to right, #3498db, #2ecc71);
+      color: white;
+      font-size: 16px;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.3s ease;
+    }
+
+    .submit-btn:hover {
+      background: linear-gradient(to right, #2ecc71, #3498db);
+    }
+
+    .form-section {
+      margin-top: 30px;
+    }
+
   </style>
 </head>
 <body>
-  <div class="dragon-bg"></div>
 
-  <h1>ABSENSI KARYAWAN KASIR</h1>
+  <div class="container">
+    <h2>Data Pengguna</h2>
 
-  <!-- Form pengaturan shift -->
-  <form id="shiftForm">
-    <h3>Atur Jam Batas Shift</h3>
-    <label>Batas Jam Masuk Shift Pagi:</label>
-    <input type="time" id="shiftPagi" value="08:00" required>
-    <label>Batas Jam Masuk Shift Siang:</label>
-    <input type="time" id="shiftSiang" value="16:00" required>
-    <label>Batas Jam Masuk Shift Malam:</label>
-    <input type="time" id="shiftMalam" value="22:00" required>
-    <button type="submit">Simpan Aturan Shift</button>
-  </form>
+    <!-- Tabel Data -->
+    <table>
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>User Name</th>
+          <th>Nama Lengkap</th>
+          <th>Email</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>bosegetas</td>
+          <td>ANDHIKA RESTU PUTRA</td>
+          <td>kotabersama88@gmail.com</td>
+        </tr>
+      </tbody>
+    </table>
 
-  <!-- Form absen -->
-  <form id="absenForm">
-    <label>Nama Karyawan:</label>
-    <input type="text" id="nama" placeholder="Masukkan Nama" required>
+    <!-- Form Edit -->
+    <div class="form-section">
+      <h2>Edit Profil</h2>
+      <form action="simpan_profil.php" method="POST">
+        <div class="form-group">
+          <label for="username">UserId</label>
+          <input type="text" id="username" name="username" value="bosegetas" readonly>
+        </div>
+        <div class="form-group">
+          <label for="fullname">Nama Lengkap</label>
+          <input type="text" id="fullname" name="fullname" value="ANDHIKA RESTU PUTRA">
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" value="kotabersama88@gmail.com">
+        </div>
+        <button type="submit" class="submit-btn">💾 Simpan Perubahan</button>
+      </form>
+    </div>
+  </div>
 
-    <label>Divisi:</label>
-    <input type="text" id="divisi" placeholder="Masukkan Divisi" required>
-
-    <label>Shift:</label>
-    <select id="shift" required>
-      <option value="Pagi">Pagi</option>
-      <option value="Siang">Siang</option>
-      <option value="Malam">Malam</option>
-    </select>
-
-    <label>Jam Masuk:</label>
-    <input type="time" id="jamMasuk" required>
-
-    <button type="submit">Submit Absen Masuk</button>
-  </form>
-
-  <button id="downloadBtn">Download ke Excel</button>
-
-  <table id="absenTable">
-    <thead>
-      <tr>
-        <th>Nama</th>
-        <th>Divisi</th>
-        <th>Shift</th>
-        <th>Jam Masuk</th>
-        <th>Tanggal</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-
-  <script>
-    const formAbsen = document.getElementById('absenForm');
-    const formShift = document.getElementById('shiftForm');
-    const tableBody = document.querySelector('#absenTable tbody');
-    const downloadBtn = document.getElementById('downloadBtn');
-
-    // Default rules
-    let shiftRules = {
-      "Pagi": "08:00",
-      "Siang": "16:00",
-      "Malam": "22:00"
-    };
-
-    // Simpan aturan shift dari form pengaturan
-    formShift.addEventListener('submit', e => {
-      e.preventDefault();
-      shiftRules.Pagi = document.getElementById('shiftPagi').value;
-      shiftRules.Siang = document.getElementById('shiftSiang').value;
-      shiftRules.Malam = document.getElementById('shiftMalam').value;
-      alert("Aturan shift berhasil diperbarui!");
-    });
-
-    formAbsen.addEventListener('submit', e => {
-      e.preventDefault();
-      const nama = document.getElementById('nama').value.trim();
-      const divisi = document.getElementById('divisi').value.trim();
-      const shift = document.getElementById('shift').value;
-      const jamMasuk = document.getElementById('jamMasuk').value;
-      if (!nama || !divisi || !jamMasuk) {
-        alert('Harap lengkapi semua data!');
-        return;
-      }
-
-      const tanggal = new Date().toLocaleDateString('id-ID');
-      const batasShift = shiftRules[shift];
-      let statusText = '';
-      let statusClass = '';
-
-      if (jamMasuk > batasShift) {
-        statusText = 'Terlambat';
-        statusClass = 'status-merah';
-      } else {
-        statusText = 'Selamat Datang';
-        statusClass = 'status-hijau';
-      }
-
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>${nama}</td>
-        <td>${divisi}</td>
-        <td>${shift}</td>
-        <td>${jamMasuk}</td>
-        <td>${tanggal}</td>
-        <td class="${statusClass}">${statusText}</td>
-      `;
-      tableBody.appendChild(row);
-      formAbsen.reset();
-    });
-
-    downloadBtn.addEventListener('click', () => {
-      if (confirm("Yakin ingin mendownload data absensi?")) {
-        let csv = 'Nama,Divisi,Shift,Jam Masuk,Tanggal,Status\n';
-        document.querySelectorAll('#absenTable tr').forEach(row => {
-          const cols = row.querySelectorAll('td, th');
-          csv += Array.from(cols).map(c => c.innerText).join(',') + '\n';
-        });
-        const a = document.createElement('a');
-        a.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
-        a.target = '_blank';
-        a.download = 'data_absensi.csv';
-        a.click();
-      }
-    });
-  </script>
 </body>
 </html>
