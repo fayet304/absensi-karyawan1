@@ -1246,6 +1246,7 @@
                 if (activities.absenMasuk) {
                     const absensiMasukRow = `
                         <tr>
+                            <th>Nama</th>
                             <td>${date}</td>
                             <td>Absen Masuk</td>
                             <td>Shift ${activities.absenMasuk.shift}</td>
@@ -1259,6 +1260,7 @@
                     activities.izin.forEach(izin => {
                         const izinRow = `
                             <tr>
+                                <th>Nama</th>
                                 <td>${date}</td>
                                 <td>Izin</td>
                                 <td>${izin.keterangan} (${izin.durasi})</td>
@@ -1272,6 +1274,7 @@
                 if (activities.absenPulang) {
                      const absensiPulangRow = `
                         <tr>
+                            <th>Nama</th>
                             <td>${date}</td>
                             <td>Absen Pulang</td>
                             <td>-</td>
