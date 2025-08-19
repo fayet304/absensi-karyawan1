@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login & Menu Utama</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0d1a2b; /* Dark Navy */
+            --secondary-color: #f4f4f4; /* Off-White */
+            --accent-color: #c9a76d; /* Muted Gold */
+            --success-color: #4a90e2; /* Soft Blue */
+            --danger-color: #d0021b; /* Dark Red */
+            --text-dark-color: #333333;
+            --text-light-color: #f4f4f4;
+            --bg-dark-color: #121212;
+            --bg-light-color: #f9f9f9;
+            --shadow-color: rgba(0, 0, 0, 0.15);
+            --warning-color: #e74c3c; /* A strong red for warning */
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-dark-color);
+        }
+
+        body {
+            background: linear-gradient(rgba(18, 18, 18, 0.8), rgba(18, 18, 18, 0.8)), url('https://images.unsplash.com/photo-1542831371-29b0f74f9713?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            overflow: hidden;
+            transition: background-color 0.5s ease;
+        }
+
+        .login-container {
+            max-width: 450px;
+            width: 90%;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px var(--shadow-color);
+            text-align: center;
+            animation: fadeIn 0.8s ease-in-out;
+            border: 1px solid #e0e0e0;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 38px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            text-transform: none;
+            letter-spacing: 2px;
+        }
+
+        .logo span {
+            color: var(--accent-color);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 15px 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            background-color: #fefefe;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 8px rgba(201, 167, 109, 0.3);
+            outline: none;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 10px;
+            color: var(--text-light-color);
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease-in-out, transform 0.2s;
+            margin-top: 15px;
+            letter-spacing: 1px;
+        }
+
+        .login-btn:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .link-bawah {
+            margin-top: 30px;
+            color: #888;
+            font-size: 15px;
+            user-select: none;
+        }
+
+        .link-bawah span {
+            color: var(--primary-color);
+            cursor: pointer;
+            margin: 0 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .link-bawah span:hover {
+            color: var(--accent-color);
+        }
+
+        /* Modal styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s;
+        }
+
+        .modal.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: var(--bg-light-color);
+            padding: 40px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            transform: scale(0.95);
+            transition: transform 0.4s ease;
+            text-align: center;
+        }
+        
+        .modal-content form button {
+            width: 100%;
+            padding: 16px;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 10px;
+            color: var(--text-light-color);
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease-in-out, transform 0.2s;
+            margin-top: 15px;
+        }
+        
+        .modal-content form button:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .modal.open .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+            margin-bottom: 30px;
+            color: var(--primary-color);
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            letter-spacing: 1px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 30px;
+            font-weight: 600;
+            color: #aaa;
+            cursor: pointer;
+            user-select: none;
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover {
+            color: #555;
+        }
+
+        /* Menu styling */
+        .menu-wrapper {
+            display: none;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            background-color: var(--bg-light-color);
+        }
+
+        .sidebar {
+            width: 300px;
+            background-color: var(--primary-color);
+            color: var(--text-light-color);
+            padding: 30px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.3);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .sidebar h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 15px;
+            user-select: none;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .sidebar ul li {
+            margin: 20px 0;
+            cursor: pointer;
+            font-size: 17px;
+            user-select: none;
+            position: relative;
+            padding-left: 30px;
+            transition: color 0.3s;
+        }
+
+        .sidebar ul li:hover {
+            color: var(--accent-color);
+        }
+
+        .sidebar ul li::before {
+            content: "\2022";
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+            font-size: 20px;
+        }
+        
+        .sidebar ul li:hover::before {
+            content: ">";
+        }
+        
+        .sidebar ul li:last-child {
+            margin-top: auto;
+            color: var(--danger-color);
+            font-weight: 600;
+        }
+
+        .sidebar ul li:last-child::before {
+            content: "🔒";
+            color: var(--danger-color);
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 50px;
+            overflow-y: auto;
+            box-sizing: border-box;
+            background-color: var(--bg-light-color);
+            transition: opacity 0.5s ease;
+        }
+
+        .content h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            margin-bottom: 30px;
+            color: var(--primary-color);
+        }
+        
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        .content-header h1 {
+            margin-bottom: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        th, td {
+            padding: 18px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+        }
+        td {
+            font-size: 15px;
+        }
+
+        thead {
+            background-color: var(--primary-color);
+            color: var(--text-light-color);
+        }
+
+        .floating-box {
+            background: white;
+            border: 1px solid #e0e0e0;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 2px 15px var(--shadow-color);
+            margin-bottom: 30px;
+        }
+        
+        .btn-blue {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 14px 25px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 15px;
+        }
+
+        .btn-blue:hover {
+            background-color: #b8935c;
+        }
+
+        #welcomeMessage {
+            margin-top: 30px;
+            padding: 25px;
+            background-color: #e6f7ff;
+            color: #004085;
+            border-left: 5px solid #0056b3;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .edit-btn, .delete-btn {
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            margin-right: 8px;
+            font-weight: 600;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .edit-btn { background-color: var(--accent-color); }
+        .edit-btn:hover { background-color: #b8935c; transform: translateY(-1px); }
+        .delete-btn { background-color: var(--danger-color); }
+        .delete-btn:hover { background-color: #b30018; transform: translateY(-1px); }
+
+        /* Animation for Timer */
+        #izinTimerContainer.start-timer .timer-wrapper {
+            animation: timerStart 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        
+        #izinTimerContainer.stop-timer .timer-wrapper {
+            animation: timerStop 0.5s ease-in forwards;
+        }
+        
+        #timer-container {
+            margin-top: 40px;
+            padding: 30px;
+            border: 2px solid var(--accent-color);
+            border-radius: 12px;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            transition: border-color 0.4s, background-color 0.4s, box-shadow 0.4s;
+        }
+
+        #timer-container.warning {
+            border: 2px solid var(--warning-color);
+            background-color: rgba(255, 235, 235, 0.95);
+            box-shadow: 0 0 25px rgba(231, 76, 60, 0.4);
+            animation: pulseWarning 1.5s infinite;
+        }
+
+        #timer-display {
+            font-family: 'Playfair Display', serif;
+            font-size: 4em;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 15px 0;
+            transition: transform 0.3s ease-in-out;
+        }
+        #timer-display:hover {
+            transform: scale(1.03);
+        }
+
+        #timer-info {
+            font-size: 1.4em;
+            color: #555;
+            margin-bottom: 25px;
+            font-weight: 300;
+        }
+
+        .timer-btn {
+            padding: 16px 30px;
+            font-size: 17px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .timer-btn.stop {
+            background-color: var(--danger-color);
+            color: white;
+            animation: pulse 1.5s infinite;
+        }
+        .timer-btn.stop:hover {
+            background-color: #b30018;
+            animation: none;
+        }
+        
+        #timer-alert {
+            font-weight: 600;
+            color: var(--warning-color);
+            margin-top: 15px;
+            font-size: 1.1em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        /* Keyframes for animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes timerStart {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes timerStop {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.1); opacity: 0; }
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(208, 2, 27, 0.4); }
+            70% { box-shadow: 0 0 0 20px rgba(208, 2, 27, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(208, 2, 27, 0); }
+        }
+
+        @keyframes pulseWarning {
+            0% { box-shadow: 0 0 15px rgba(231, 76, 60, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(231, 76, 60, 0.6); }
+            100% { box-shadow: 0 0 15px rgba(231, 76, 60, 0.4); }
+        }
+
+        /* New Styles for Aktivitas Baru Karyawan */
+        .aktivitas-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .aktivitas-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #e0e0e0;
+        }
+
+        .aktivitas-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .aktivitas-card .icon {
+            font-size: 5em;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            transition: color 0.3s;
+        }
+
+        .aktivitas-card:hover .icon {
+            color: var(--accent-color);
+        }
+
+        .aktivitas-card.izin .icon { color: var(--accent-color); }
+        .aktivitas-card.pulang .icon { color: var(--danger-color); }
+
+        /* Modal styling with icons */
+        .modal-content .izin-options {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .modal-content .izin-options .izin-btn {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 18px;
+            border-radius: 10px;
+            border: none;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .modal-content .izin-options .izin-btn:hover {
+            background-color: #b8935c;
+        }
+        .modal-content .izin-options .izin-btn .fa-solid {
+            margin-right: 15px;
+            vertical-align: middle;
+        }
+
+        /* Modal for Absen Masuk */
+        .shift-options {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .shift-options .shift-btn {
+            background-color: var(--success-color);
+            color: white;
+            padding: 18px;
+            border-radius: 10px;
+            border: none;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .shift-options .shift-btn:hover {
+            background-color: #3b74b6;
+        }
+
+        /* Modal for Absen Pulang */
+        .pulang-modal-content h2 {
+            color: var(--danger-color);
+        }
+        .pulang-message {
+            margin-bottom: 30px;
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #555;
+        }
+        .pulang-btn {
+            background-color: var(--danger-color);
+            color: white;
+            padding: 18px 35px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .pulang-btn:hover {
+            background-color: #b30018;
+        }
+
+        /* New CSS for the new timer layout */
+        .timer-wrapper {
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        /* CAPTCHA Styles */
+        .captcha-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        #captchaText {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: bold;
+            color: #f4f4f4;
+            background-color: #555;
+            padding: 5px 10px;
+            border-radius: 5px;
+            letter-spacing: 2px;
+            user-select: none;
+            cursor: pointer;
+        }
+        #refreshCaptcha {
+            background-color: #ccc;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+        #refreshCaptcha:hover {
+            background-color: #bbb;
+        }
+
+        .captcha-input {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container" id="loginPage">
+        <div class="logo">Manajemen <span>Karyawan</span></div>
+        <form onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label for="username">Nama Lengkap</label>
+                <input type="text" id="username" placeholder="Masukkan nama lengkap Anda" required />
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Masukkan password Anda" required />
+            </div>
+            <button type="submit" class="login-btn">Login</button>
+        </form>
+        <div class="link-bawah">
+            <span onclick="openModal('modalLupa')">Lupa password?</span> | 
+            <span onclick="openModal('modalDaftar')">Daftar akun</span>
+        </div>
+    </div>
+
+    <div class="menu-wrapper" id="menuPage">
+        <div class="sidebar">
+            <h2>MENU UTAMA</h2>
+            <ul>
+                <li id="menuDataUser" onclick="showPage('tambahPemain')">Data User</li>
+                <li onclick="showPage('riwayatLogin')">Riwayat Login</li>
+                <li onclick="showPage('aktivitasBaru')">Aktivitas Baru</li>
+                <li onclick="showPage('historyAktivitas')">History Aktivitas</li>
+                <li onclick="logout()">Logout</li>
+            </ul>
+        </div>
+        <div class="content" id="contentArea"></div>
+    </div>
+
+    
+    <div id="modalDaftar" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('modalDaftar')">&times;</span>
+            <h2>Daftar Akun Baru</h2>
+            <form id="formDaftar" onsubmit="handleDaftar(event)">
+                <div class="form-group">
+                    <label for="daftarUsername">Username:</label>
+                    <input type="text" id="daftarUsername" required />
+                </div>
+                <div class="form-group">
+                    <label for="daftarDivisi">Divisi:</label>
+                    <input type="text" id="daftarDivisi" required />
+                </div>
+                <div class="form-group">
+                    <label for="daftarEmail">Email:</label>
+                    <input type="email" id="daftarEmail" required />
+                </div>
+                <div class="form-group">
+                    <label>Verifikasi CAPTCHA:</label>
+                    <div class="captcha-group">
+                        <span id="captchaText" onclick="generateCaptcha()"></span>
+                        <button type="button" id="refreshCaptcha" onclick="generateCaptcha()"><i class="fa-solid fa-sync-alt"></i></button>
+                    </div>
+                    <input type="text" id="captchaInput" class="captcha-input" placeholder="Masukkan kode di atas" required />
+                </div>
+
+                <button type="submit">Daftar</button>
+            </form>
+            <div id="daftarMessage" style="margin-top:15px; text-align: center;"></div>
+        </div>
+    </div>
+
+    
+    <div id="modalLupa" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('modalLupa')">&times;</span>
+            <h2>Lupa Password</h2>
+            <p>Silakan hubungi administrator Anda untuk mendapatkan bantuan reset password.</p>
+        </div>
+    </div>
+
+    <div id="modalEditUser" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('modalEditUser')">&times;</span>
+            <h2>Edit Data User</h2>
+            <form id="formEditUser" onsubmit="submitEditUser(event)">
+                <input type="hidden" id="editOriginalUsername" />
+                <div class="form-group">
+                    <label for="editRole">Role:</label>
+                    <select id="editRole">
+                        <option value="User">User</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editShift">Shift:</label>
+                    <select id="editShift">
+                        <option value="Pagi">Pagi</option>
+                        <option value="Siang">Siang</option>
+                        <option value="Malam">Malam</option>
+                        <option value="">-</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editUsername">Username:</label>
+                    <input type="text" id="editUsername" required />
+                </div>
+                <div class="form-group">
+                    <label for="editPassword">Password:</label>
+                    <input type="text" id="editPassword" required />
+                </div>
+                <div class="form-group">
+                    <label for="editDivisi">Divisi:</label>
+                    <input type="text" id="editDivisi" />
+                </div>
+                <div class="form-group">
+                    <label for="editEmail">Email:</label>
+                    <input type="email" id="editEmail" />
+                </div>
+                <button type="submit" class="btn-blue">Simpan Perubahan</button>
+            </form>
+            <div id="editMessage" style="margin-top:15px; text-align: center;"></div>
+        </div>
+    </div>
+
+    <div id="modalPilihanIzin" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('modalPilihanIzin')">&times;</span>
+            <h2>Pilihan Keterangan Izin</h2>
+            <div class="izin-options">
+                <button class="izin-btn" onclick="startIzinTimer('Toilet')"><i class="fa-solid fa-toilet"></i> Toilet</button>
+                <button class="izin-btn" onclick="startIzinTimer('Beli Makan')"><i class="fa-solid fa-utensils"></i> Beli Makan</button>
+                <button class="izin-btn" onclick="startIzinTimer('Merokok')"><i class="fa-solid fa-smoking"></i> Merokok</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalAbsenMasuk" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('modalAbsenMasuk')">&times;</span>
+            <h2>Pilih Shift Absen Masuk</h2>
+            <div class="shift-options">
+                <button class="shift-btn" onclick="submitShift('Pagi')">Absen Shift Pagi</button>
+                <button class="shift-btn" onclick="submitShift('Siang')">Absen Shift Siang</button>
+                <button class="shift-btn" onclick="submitShift('Malam')">Absen Shift Malam</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalAbsenPulang" class="modal">
+        <div class="modal-content pulang-modal-content">
+            <span class="close-btn" onclick="closeModal('modalAbsenPulang')">&times;</span>
+            <h2>Absen Pulang</h2>
+            <p class="pulang-message">
+                Terima kasih atas kerja keras Anda hari ini! <br>
+                <strong>Istirahatlah yang cukup, dan sampai jumpa esok hari!</strong>
+            </p>
+            <button class="pulang-btn" onclick="confirmAbsenPulang()">Ya, Absen Pulang</button>
+        </div>
+    </div>
+
+    <script>
+        // Global variable for the timer interval
+        let timerInterval = null;
+        let captchaCode = '';
+        let currentIzinType = null;
+        let izinTimerSeconds = 0;
+        let timerWarningShown = false;
+
+        // --- Modal controls ---
+        function openModal(id) {
+            document.getElementById(id).style.display = "flex";
+            setTimeout(() => {
+                document.getElementById(id).classList.add('open');
+            }, 10);
+
+            if (id === 'modalDaftar') {
+                generateCaptcha();
+            }
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.remove('open');
+            setTimeout(() => {
+                modal.style.display = "none";
+            }, 400);
+            
+            // Reset messages and forms on close
+            if(id === "modalDaftar") {
+                document.getElementById("formDaftar").reset();
+                document.getElementById("daftarMessage").textContent = "";
+            }
+        }
+
+        // Tutup modal jika klik di luar konten modal
+        window.onclick = function(event) {
+            const modalDaftar = document.getElementById("modalDaftar");
+            const modalLupa = document.getElementById("modalLupa");
+            const modalEdit = document.getElementById("modalEditUser");
+            const modalIzin = document.getElementById("modalPilihanIzin");
+            const modalAbsen = document.getElementById("modalAbsenMasuk");
+            const modalPulang = document.getElementById("modalAbsenPulang");
+            if (event.target === modalDaftar) {
+                closeModal('modalDaftar');
+            }
+            if (event.target === modalLupa) {
+                closeModal('modalLupa');
+            }
+            if (event.target === modalEdit) {
+                closeModal('modalEditUser');
+            }
+            if (event.target === modalIzin) {
+                closeModal('modalPilihanIzin');
+            }
+            if (event.target === modalAbsen) {
+                closeModal('modalAbsenMasuk');
+            }
+            if (event.target === modalPulang) {
+                closeModal('modalAbsenPulang');
+            }
+        };
+
+        // --- Login & Register ---
+        window.onload = function () {
+            const isLoggedIn = localStorage.getItem("isLoggedIn");
+            if (isLoggedIn === "true") {
+                document.getElementById("loginPage").style.display = "none";
+                document.getElementById("menuPage").style.display = "flex";
+                checkUserRoleAndDisplayMenu();
+                showPage("aktivitasBaru");
+            }
+        };
+
+        function checkUserRoleAndDisplayMenu() {
+            const currentUser = localStorage.getItem("currentUser");
+            const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+            const user = users.find(u => u.username === currentUser);
+            
+            const menuDataUser = document.getElementById("menuDataUser");
+            if (menuDataUser) {
+                 if (user && user.role === "Admin") {
+                    menuDataUser.style.display = "list-item";
+                } else {
+                    menuDataUser.style.display = "none";
+                }
+            }
+           
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+
+            let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+            const adminUser = {username: "admin", password: "12345", role: "Admin", nama: "Admin", divisi: "Admin", email: "admin@example.com", shift: ""};
+            
+            if (!users.find(u => u.username === "admin")) {
+                users.unshift(adminUser);
+                localStorage.setItem("userAccounts", JSON.stringify(users));
+            }
+
+            let userFound = users.find(u => u.username === username && u.password === password);
+
+            if (userFound) {
+                localStorage.setItem("isLoggedIn", "true");
+                localStorage.setItem("currentUser", userFound.username);
+                localStorage.setItem("currentUserName", userFound.nama);
+
+                document.getElementById("loginPage").style.display = "none";
+                document.getElementById("menuPage").style.display = "flex";
+
+                checkUserRoleAndDisplayMenu();
+
+                const logs = JSON.parse(localStorage.getItem("loginLogs") || "[]");
+                const now = new Date();
+                const waktu = now.toLocaleString('id-ID');
+                const agent = /Mobi/i.test(navigator.userAgent) ? "Mobile Browser" : "Desktop Browser";
+                const ip = "192.168.1." + Math.floor(Math.random() * 100 + 1);
+                logs.push({ nama: userFound.nama, waktu, agent, ip });
+                localStorage.setItem("loginLogs", JSON.stringify(logs));
+
+                showPage('aktivitasBaru');
+            } else {
+                alert("Login gagal! Username atau password salah.");
+            }
+        }
+        
+        function generateCaptcha() {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let captcha = '';
+            for (let i = 0; i < 6; i++) {
+                captcha += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            captchaCode = captcha;
+            document.getElementById('captchaText').textContent = captchaCode;
+        }
+
+        function handleDaftar(e) {
+            e.preventDefault();
+            const username = document.getElementById('daftarUsername').value.trim();
+            const divisi = document.getElementById('daftarDivisi').value.trim();
+            const email = document.getElementById('daftarEmail').value.trim();
+            const captchaInput = document.getElementById('captchaInput').value;
+            const daftarMessage = document.getElementById('daftarMessage');
+
+            if (captchaInput !== captchaCode) {
+                daftarMessage.textContent = 'Kode CAPTCHA salah!';
+                daftarMessage.style.color = 'var(--danger-color)';
+                generateCaptcha();
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+            const existingUser = users.find(u => u.username === username);
+            const existingEmail = users.find(u => u.email === email);
+
+            if (existingUser) {
+                daftarMessage.textContent = 'Username sudah terdaftar.';
+                daftarMessage.style.color = 'var(--danger-color)';
+                return;
+            }
+            
+            if (existingEmail) {
+                daftarMessage.textContent = 'Email sudah terdaftar.';
+                daftarMessage.style.color = 'var(--danger-color)';
+                return;
+            }
+
+            // Generate a default password. User can change it later.
+            const defaultPassword = "password123";
+
+            const newUser = {
+                nama: username, // Menggunakan username sebagai nama lengkap
+                username: username,
+                divisi: divisi,
+                email: email,
+                password: defaultPassword, // Default password
+                role: 'User',
+                shift: ''
+            };
+            
+            users.push(newUser);
+            localStorage.setItem("userAccounts", JSON.stringify(users));
+
+            daftarMessage.innerHTML = `Pendaftaran berhasil! Akun Anda telah dibuat dengan username **${username}** dan password sementara **${defaultPassword}**. Silakan login dan ubah password Anda.`;
+            daftarMessage.style.color = 'var(--success-color)';
+            
+            document.getElementById("formDaftar").reset();
+            generateCaptcha();
+        }
+
+        function logout() {
+            localStorage.setItem("isLoggedIn", "false");
+            localStorage.removeItem("currentUser");
+            localStorage.removeItem("currentUserName");
+            location.reload();
+        }
+
+        // --- Navigation ---
+        function showPage(pageName) {
+            const contentArea = document.getElementById('contentArea');
+            contentArea.innerHTML = '';
+            
+            switch (pageName) {
+                case 'tambahPemain':
+                    if (localStorage.getItem("currentUser") === "admin") {
+                        generateUserTable();
+                    } else {
+                        contentArea.innerHTML = `
+                            <div class="floating-box" style="text-align:center;">
+                                <h1>Akses Ditolak</h1>
+                                <p>Anda tidak memiliki izin untuk melihat halaman ini.</p>
+                            </div>
+                        `;
+                    }
+                    break;
+                case 'riwayatLogin':
+                    generateLoginHistory();
+                    break;
+                case 'aktivitasBaru':
+                    generateAktivitasPage();
+                    break;
+                case 'historyAktivitas':
+                    generateHistoryAktivitas();
+                    break;
+            }
+        }
+
+        // --- Dynamic Content Generation ---
+        function generateUserTable() {
+            const contentArea = document.getElementById('contentArea');
+            let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+
+            let tableHTML = `
+                <div class="content-header">
+                    <h1>Data User</h1>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Nama Lengkap</th>
+                            <th>Divisi</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Shift</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            users.forEach(user => {
+                tableHTML += `
+                    <tr>
+                        <td>${user.username}</td>
+                        <td>${user.nama}</td>
+                        <td>${user.divisi}</td>
+                        <td>${user.email}</td>
+                        <td>${user.role}</td>
+                        <td>${user.shift}</td>
+                        <td>
+                            <button class="edit-btn" onclick="editUser('${user.username}')">Edit</button>
+                            <button class="delete-btn" onclick="deleteUser('${user.username}')">Hapus</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += `
+                    </tbody>
+                </table>
+            `;
+            contentArea.innerHTML = tableHTML;
+        }
+
+        function generateLoginHistory() {
+            const contentArea = document.getElementById('contentArea');
+            const logs = JSON.parse(localStorage.getItem("loginLogs") || "[]");
+
+            let tableHTML = `
+                <div class="content-header">
+                    <h1>Riwayat Login</h1>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nama</th>
+                            <th>Waktu Login</th>
+                            <th>Perangkat</th>
+                            <th>IP Address</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            logs.reverse().forEach(log => {
+                tableHTML += `
+                    <tr>
+                        <td>${log.nama}</td>
+                        <td>${log.waktu}</td>
+                        <td>${log.agent}</td>
+                        <td>${log.ip}</td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += `
+                    </tbody>
+                </table>
+            `;
+            contentArea.innerHTML = tableHTML;
+        }
+
+        function generateAktivitasPage() {
+            const contentArea = document.getElementById('contentArea');
+            const currentUser = localStorage.getItem("currentUser");
+            const currentUserName = localStorage.getItem("currentUserName");
+            const userActivities = JSON.parse(localStorage.getItem("userActivities") || "{}");
+            const today = new Date().toDateString();
+            const hasAbsenMasuk = userActivities[currentUser] && userActivities[currentUser][today] && userActivities[currentUser][today].absenMasuk;
+
+            contentArea.innerHTML = `
+                <div class="content-header">
+                    <h1>Selamat Datang, ${currentUserName}!</h1>
+                </div>
+                <div id="welcomeMessage">
+                    Absen Masuk untuk hari ini adalah <strong>WAJIB</strong>. Silakan pilih shift Anda.
+                </div>
+                <div class="aktivitas-container">
+                    <div class="aktivitas-card" id="absenMasukCard">
+                        <i class="fa-solid fa-clock icon"></i>
+                        <h3>Absen Masuk</h3>
+                    </div>
+                    <div class="aktivitas-card izin" id="izinCard">
+                        <i class="fa-solid fa-person-walking-arrow-right icon"></i>
+                        <h3>Izin</h3>
+                    </div>
+                    <div class="aktivitas-card pulang" id="absenPulangCard">
+                        <i class="fa-solid fa-door-closed icon"></i>
+                        <h3>Absen Pulang</h3>
+                    </div>
+                </div>
+                <div id="izinTimerContainer"></div>
+            `;
+            
+            // Event listeners for activity cards
+            document.getElementById('absenMasukCard').addEventListener('click', () => {
+                if (!hasAbsenMasuk) {
+                    openModal('modalAbsenMasuk');
+                } else {
+                    alert('Anda sudah absen masuk hari ini.');
+                }
+            });
+            document.getElementById('izinCard').addEventListener('click', () => {
+                if (hasAbsenMasuk) {
+                    openModal('modalPilihanIzin');
+                } else {
+                    alert('Silakan absen masuk terlebih dahulu.');
+                }
+            });
+            document.getElementById('absenPulangCard').addEventListener('click', () => {
+                 if (hasAbsenMasuk) {
+                    openModal('modalAbsenPulang');
+                } else {
+                    alert('Silakan absen masuk terlebih dahulu.');
+                }
+            });
+        }
+        
+        // Fungsi generateHistoryAktivitas yang telah diperbarui
+        function generateHistoryAktivitas() {
+            const contentArea = document.getElementById('contentArea');
+            const currentUser = localStorage.getItem("currentUser");
+            const userActivities = JSON.parse(localStorage.getItem("userActivities") || "{}");
+            const today = new Date().toDateString();
+            
+            let historyHTML = `
+                <div class="content-header">
+                    <h1>History Aktivitas</h1>
+                </div>
+                <div class="floating-box">
+                    <h2>Riwayat Aktivitas Anda</h2>
+                    <p>Waktu Izin Hari Ini: <strong id="totalIzinTime">00:00:00</strong></p>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>Aktivitas</th>
+                            <th>Keterangan</th>
+                            <th>Waktu</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody">
+                    </tbody>
+                </table>
+            `;
+            contentArea.innerHTML = historyHTML;
+
+            const activitiesForUser = userActivities[currentUser] || {};
+            const historyTableBody = document.getElementById('historyTableBody');
+            
+            let izinTimeToday = 0;
+            const todayActivities = activitiesForUser[today] || {};
+
+            if (todayActivities.izin) {
+                todayActivities.izin.forEach(izin => {
+                    izinTimeToday += parseDurationToSeconds(izin.durasi);
+                });
+            }
+            
+            document.getElementById('totalIzinTime').textContent = formatTime(izinTimeToday);
+            
+            // Generate full history table
+            for (const date in activitiesForUser) {
+                const activities = activitiesForUser[date];
+                if (activities.absenMasuk) {
+                    const absensiMasukRow = `
+                        <tr>
+                            <td>${date}</td>
+                            <td>Absen Masuk</td>
+                            <td>Shift ${activities.absenMasuk.shift}</td>
+                            <td>${activities.absenMasuk.waktu}</td>
+                        </tr>
+                    `;
+                    historyTableBody.innerHTML += absensiMasukRow;
+                }
+                
+                if (activities.izin) {
+                    activities.izin.forEach(izin => {
+                        const izinRow = `
+                            <tr>
+                                <td>${date}</td>
+                                <td>Izin</td>
+                                <td>${izin.keterangan} (${izin.durasi})</td>
+                                <td>${izin.waktuMulai}</td>
+                            </tr>
+                        `;
+                        historyTableBody.innerHTML += izinRow;
+                    });
+                }
+                
+                if (activities.absenPulang) {
+                     const absensiPulangRow = `
+                        <tr>
+                            <td>${date}</td>
+                            <td>Absen Pulang</td>
+                            <td>-</td>
+                            <td>${activities.absenPulang.waktu}</td>
+                        </tr>
+                    `;
+                    historyTableBody.innerHTML += absensiPulangRow;
+                }
+            }
+        }
+
+        // --- CRUD Operations for Users (Admin Only) ---
+        function editUser(usernameToEdit) {
+            const users = JSON.parse(localStorage.getItem("userAccounts"));
+            const user = users.find(u => u.username === usernameToEdit);
+            if (!user) return;
+
+            document.getElementById('editOriginalUsername').value = user.username;
+            document.getElementById('editRole').value = user.role;
+            document.getElementById('editShift').value = user.shift;
+            document.getElementById('editUsername').value = user.username;
+            document.getElementById('editPassword').value = user.password;
+            document.getElementById('editDivisi').value = user.divisi;
+            document.getElementById('editEmail').value = user.email;
+
+            openModal('modalEditUser');
+        }
+
+        function submitEditUser(e) {
+            e.preventDefault();
+            const originalUsername = document.getElementById('editOriginalUsername').value;
+            const newRole = document.getElementById('editRole').value;
+            const newShift = document.getElementById('editShift').value;
+            const newUsername = document.getElementById('editUsername').value;
+            const newPassword = document.getElementById('editPassword').value;
+            const newDivisi = document.getElementById('editDivisi').value;
+            const newEmail = document.getElementById('editEmail').value;
+            const editMessage = document.getElementById('editMessage');
+
+            let users = JSON.parse(localStorage.getItem("userAccounts"));
+            const userIndex = users.findIndex(u => u.username === originalUsername);
+            if (userIndex === -1) {
+                editMessage.textContent = "User tidak ditemukan.";
+                editMessage.style.color = 'var(--danger-color)';
+                return;
+            }
+
+            // Check for duplicate username/email if they are changed
+            if (newUsername !== originalUsername && users.find(u => u.username === newUsername)) {
+                 editMessage.textContent = 'Username sudah ada.';
+                 editMessage.style.color = 'var(--danger-color)';
+                 return;
+            }
+            if (newEmail !== users[userIndex].email && users.find(u => u.email === newEmail)) {
+                 editMessage.textContent = 'Email sudah ada.';
+                 editMessage.style.color = 'var(--danger-color)';
+                 return;
+            }
+
+            users[userIndex].role = newRole;
+            users[userIndex].shift = newShift;
+            users[userIndex].username = newUsername;
+            users[userIndex].password = newPassword;
+            users[userIndex].divisi = newDivisi;
+            users[userIndex].email = newEmail;
+            
+            localStorage.setItem("userAccounts", JSON.stringify(users));
+            editMessage.textContent = "Data user berhasil diupdate!";
+            editMessage.style.color = 'var(--success-color)';
+            
+            // Reload user table to show changes
+            setTimeout(() => {
+                closeModal('modalEditUser');
+                showPage('tambahPemain');
+            }, 1000);
+        }
+
+        function deleteUser(usernameToDelete) {
+            if (usernameToDelete === "admin") {
+                alert("Tidak bisa menghapus akun admin.");
+                return;
+            }
+            if (confirm(`Apakah Anda yakin ingin menghapus user ${usernameToDelete}?`)) {
+                let users = JSON.parse(localStorage.getItem("userAccounts"));
+                users = users.filter(user => user.username !== usernameToDelete);
+                localStorage.setItem("userAccounts", JSON.stringify(users));
+                showPage('tambahPemain'); // Reload user table
+            }
+        }
+        
+        // --- Activity and Timer Functions ---
+        function submitShift(shift) {
+            const currentUser = localStorage.getItem("currentUser");
+            const userActivities = JSON.parse(localStorage.getItem("userActivities") || "{}");
+            const today = new Date().toDateString();
+            const now = new Date();
+
+            if (!userActivities[currentUser]) {
+                userActivities[currentUser] = {};
+            }
+            if (!userActivities[currentUser][today]) {
+                 userActivities[currentUser][today] = {};
+            }
+
+            userActivities[currentUser][today].absenMasuk = {
+                shift: shift,
+                waktu: now.toLocaleString('id-ID')
+            };
+
+            userActivities[currentUser][today].totalWorkTime = "00:00:00"; // Initialize total work time
+            
+            localStorage.setItem("userActivities", JSON.stringify(userActivities));
+            closeModal('modalAbsenMasuk');
+            
+            const welcomeMessage = document.getElementById("welcomeMessage");
+            welcomeMessage.innerHTML = `Anda telah absen untuk **Shift ${shift}**. Selamat bekerja!`;
+        }
+
+        function startIzinTimer(izinType) {
+            const container = document.getElementById('izinTimerContainer');
+            container.innerHTML = `
+                <div id="timer-container">
+                    <p id="timer-info">Waktu Izin: ${izinType}</p>
+                    <h3 id="timer-display">00:00:00</h3>
+                    <button class="timer-btn stop" onclick="stopIzinTimer()">Selesai Izin</button>
+                    <div id="timer-alert"></div>
+                </div>
+            `;
+            container.classList.add('start-timer');
+            currentIzinType = izinType;
+            izinTimerSeconds = 0;
+            timerWarningShown = false;
+            
+            timerInterval = setInterval(updateIzinTimer, 1000);
+            
+            closeModal('modalPilihanIzin');
+        }
+
+        function updateIzinTimer() {
+            izinTimerSeconds++;
+            const display = document.getElementById('timer-display');
+            const alert = document.getElementById('timer-alert');
+            const container = document.getElementById('timer-container');
+
+            display.textContent = formatTime(izinTimerSeconds);
+
+            // Show warning at 20 minutes
+            if (izinTimerSeconds >= 20 * 60 && !timerWarningShown) {
+                alert.textContent = "Waktu izin Anda sudah 20 menit!";
+                container.classList.add('warning');
+                timerWarningShown = true;
+            }
+        }
+
+        function stopIzinTimer() {
+            clearInterval(timerInterval);
+            
+            const currentUser = localStorage.getItem("currentUser");
+            const userActivities = JSON.parse(localStorage.getItem("userActivities") || "{}");
+            const today = new Date().toDateString();
+            const now = new Date();
+
+            if (userActivities[currentUser] && userActivities[currentUser][today]) {
+                if (!userActivities[currentUser][today].izin) {
+                    userActivities[currentUser][today].izin = [];
+                }
+                userActivities[currentUser][today].izin.push({
+                    keterangan: currentIzinType,
+                    waktuMulai: now.toLocaleString('id-ID'),
+                    durasi: formatTime(izinTimerSeconds)
+                });
+                
+                localStorage.setItem("userActivities", JSON.stringify(userActivities));
+            }
+            
+            const container = document.getElementById('izinTimerContainer');
+            container.classList.add('stop-timer');
+            setTimeout(() => {
+                 container.innerHTML = '';
+                 container.classList.remove('start-timer', 'stop-timer');
+            }, 500);
+        }
+
+        function confirmAbsenPulang() {
+            const currentUser = localStorage.getItem("currentUser");
+            const userActivities = JSON.parse(localStorage.getItem("userActivities") || "{}");
+            const today = new Date().toDateString();
+            const now = new Date();
+
+            if (userActivities[currentUser] && userActivities[currentUser][today] && userActivities[currentUser][today].absenMasuk) {
+                const absenMasukTime = new Date(userActivities[currentUser][today].absenMasuk.waktu);
+                const timeDiffSeconds = Math.floor((now - absenMasukTime) / 1000);
+                
+                userActivities[currentUser][today].absenPulang = {
+                    waktu: now.toLocaleString('id-ID')
+                };
+                userActivities[currentUser][today].totalWorkTime = formatTime(timeDiffSeconds);
+                
+                localStorage.setItem("userActivities", JSON.stringify(userActivities));
+                closeModal('modalAbsenPulang');
+                showPage('historyAktivitas');
+            } else {
+                alert("Anda belum absen masuk hari ini.");
+                closeModal('modalAbsenPulang');
+            }
+        }
+
+        // --- Helper Functions ---
+        function formatTime(seconds) {
+            const h = String(Math.floor(seconds / 3600)).padStart(2, '0');
+            const m = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+            const s = String(seconds % 60).padStart(2, '0');
+            return `${h}:${m}:${s}`;
+        }
+        
+        function parseDurationToSeconds(duration) {
+            const parts = duration.split(':').map(Number);
+            return parts[0] * 3600 + parts[1] * 60 + parts[2];
+        }
+
+    </script>
+</body>
+</html>
