@@ -1,715 +1,368 @@
 <!DOCTYPE html>
-
 <html lang="id">
-
 <head>
-
     <meta charset="UTF-8" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <title>HR GLASS ULTIMATE FINAL SYSTEM 2026</title>
-
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
     <style>
-
         :root {
-
             --glass: rgba(255, 255, 255, 0.1);
-
             --glass-heavy: rgba(255, 255, 255, 0.15);
-
             --border: rgba(255, 255, 255, 0.2);
-
             --accent: #00d2ff;
-
             --danger: #ff4b2b;
-
             --warning: #ffcc00;
-
             --success: #00ff88;
-
         }
-
-
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-
         body {
-
             background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-
             background-attachment: fixed; min-height: 100vh; display: flex;
-
             justify-content: center; align-items: center; color: white; overflow: hidden;
-
         }
-
-
 
         .glass { background: var(--glass); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid var(--border); border-radius: 20px; }
-
-       
-
+        
         #loginPage { width: 380px; padding: 40px; text-align: center; }
-
         #mainSystem { display: none; width: 98%; height: 95vh; }
-
-       
-
+        
         .sidebar { width: 260px; padding: 30px; border-right: 1px solid var(--border); display: flex; flex-direction: column; }
-
         .sidebar li {
-
             padding: 15px; list-style: none; margin-bottom: 8px; border-radius: 12px; cursor: pointer; transition: 0.3s;
-
             display: flex; align-items: center; gap: 12px; font-size: 14px;
-
         }
-
         .sidebar li:hover, .sidebar li.active { background: var(--glass-heavy); color: var(--accent); }
-
-
 
         .content-area { flex-grow: 1; padding: 30px; overflow-y: auto; }
 
-
-
         .btn { padding: 12px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
-
         .btn-accent { background: var(--accent); color: #0f2027; }
-
         .btn-danger { background: var(--danger); color: white; }
-
         .btn-warning { background: var(--warning); color: #000; }
-
         .input-box { padding: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; color: white; outline: none; border: 1px solid var(--border); }
-
-       
-
+        
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-top: 20px; }
-
         .card-action { padding: 25px; text-align: center; cursor: pointer; transition: 0.3s; border: 1px solid var(--border); position: relative; }
-
         .card-action:hover:not(.locked) { background: var(--glass-heavy); transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
-
         .card-action i { font-size: 30px; color: var(--accent); margin-bottom: 12px; }
-
         .locked { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); }
 
-
-
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-
         th { text-align: left; color: var(--accent); padding: 12px; border-bottom: 2px solid var(--border); font-size: 12px; text-transform: uppercase; }
-
         td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 12px; }
-
-       
-
+        
         .badge { padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; }
-
         .bg-danger { background: var(--danger); color: white; }
-
         .bg-success { background: var(--success); color: #000; }
 
-
-
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; }
-
         .timer-val { font-size: 50px; font-weight: bold; margin: 20px 0; color: var(--accent); font-family: monospace; }
-
         .section-title { margin-top:30px; border-left:4px solid var(--accent); padding-left:15px; font-size: 16px; color: var(--accent); margin-bottom: 15px; }
-
-       
-
+        
         .filter-container { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; align-items: flex-end; }
-
         .filter-group { display: flex; flex-direction: column; gap: 5px; }
-
         .filter-group label { font-size: 10px; color: var(--accent); font-weight: 600; }
-
     </style>
-
 </head>
-
 <body>
 
-
-
     <div id="loginPage" class="glass">
-
         <h2 style="margin-bottom: 20px;">HR<span style="color:var(--accent)">GLASS</span></h2>
-
-        <div id="ipIndicator" style="font-size: 10px; margin-bottom: 10px; color: var(--accent);">Your IP: Detecting...</div>
-
+        <div id="ipIndicator" style="font-size: 10px; margin-bottom: 10px; color: var(--accent);">Your IP: Fetching...</div>
         <form onsubmit="handleLogin(event)">
-
             <input type="text" id="uIn" class="input-box" style="width:100%; margin-bottom:15px;" placeholder="User ID" required>
-
             <input type="password" id="pIn" class="input-box" style="width:100%; margin-bottom:20px;" placeholder="Password" required>
-
             <button type="submit" class="btn btn-accent" style="width:100%">LOGIN</button>
-
         </form>
-
     </div>
-
-
 
     <div id="mainSystem" class="glass">
-
         <div class="sidebar">
-
             <h2 style="margin-bottom: 20px;">HR<span style="color:var(--accent)">PRO</span></h2>
-
             <div id="userBadge" style="margin-bottom: 20px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px; text-align: center;">
-
                 <p id="userName" style="font-weight: 600; font-size: 14px;">Name</p>
-
                 <span id="userRole" style="font-size: 10px; color: var(--accent); text-transform: uppercase;">Role</span>
-
             </div>
-
             <ul id="navMenu">
-
                 <li onclick="showPage('dashboard')" id="nav-dashboard" class="active"><i class="fa fa-home"></i> Dashboard</li>
-
                 <li onclick="showPage('karyawan')" id="nav-karyawan"><i class="fa fa-users"></i> Karyawan</li>
-
                 <li onclick="showPage('logs')" id="nav-logs"><i class="fa fa-shield-alt"></i> Catatan Log</li>
-
                 <li onclick="showPage('setting-jadwal')" id="nav-setting-jadwal"><i class="fa fa-calendar-check"></i> Setting Jadwal</li>
-
                 <li onclick="showPage('history')" id="nav-history"><i class="fa fa-history"></i> History Aktivitas</li>
-
                 <li onclick="location.reload()" style="margin-top:auto; color: var(--danger);"><i class="fa fa-power-off"></i> Logout</li>
-
             </ul>
-
         </div>
-
         <div class="content-area" id="mainView"></div>
-
     </div>
-
-
 
     <div id="editModal" class="modal">
-
         <div class="glass" style="padding: 30px; width: 400px;">
-
             <h2 style="margin-bottom: 20px; color: var(--accent); text-align: center;">Edit Profil Karyawan</h2>
-
             <input type="hidden" id="editIdx">
-
             <div style="margin-bottom:15px;"><label style="font-size: 11px;">Nama:</label><input type="text" id="en" class="input-box" style="width: 100%;"></div>
-
             <div style="margin-bottom:15px;"><label style="font-size: 11px;">User ID:</label><input type="text" id="eu" class="input-box" style="width: 100%;"></div>
-
             <div style="margin-bottom:15px;"><label style="font-size: 11px;">Sandi:</label><input type="text" id="es" class="input-box" style="width: 100%;"></div>
-
             <div style="margin-bottom:20px;"><label style="font-size: 11px;">Role:</label><select id="er" class="input-box" style="width: 100%;"><option value="karyawan">Karyawan</option><option value="admin">Admin</option></select></div>
-
             <button class="btn btn-accent" style="width: 100%;" onclick="saveEdit()">SIMPAN</button>
-
             <button class="btn" style="width: 100%; margin-top: 10px; background: none;" onclick="closeEditModal()">Batal</button>
-
         </div>
-
     </div>
-
-
 
     <div id="timerModal" class="modal">
-
         <div class="glass" style="padding: 40px; text-align: center; width: 400px;">
-
             <h2 id="timerName">Izin</h2>
-
             <div id="timerDisplay" class="timer-val">00:00:00</div>
-
             <button class="btn btn-danger" style="width: 100%;" onclick="stopIzin()">STOP / SELESAI</button>
-
         </div>
-
     </div>
-
-
 
     <div id="absenModal" class="modal">
-
         <div class="glass" style="padding: 30px; text-align: center; width: 400px;">
-
             <h2 style="margin-bottom: 20px; color: var(--accent);">Form Absen Hadir</h2>
-
             <div style="text-align: left; margin-bottom: 10px;">
-
                 <label style="font-size: 11px;">Divisi:</label>
-
                 <select id="selDivisi" class="input-box" style="width: 100%;">
-
                     <option value="admin">Admin</option><option value="marketing">Marketing</option>
-
                     <option value="crm">CRM</option><option value="cs">CS</option><option value="kasir">Kasir</option>
-
                 </select>
-
             </div>
-
             <div style="text-align: left; margin-bottom: 20px;">
-
                 <label style="font-size: 11px;">Shift:</label>
-
                 <select id="selShift" class="input-box" style="width: 100%;">
-
                     <option value="pagi">Pagi</option><option value="siang">Siang</option><option value="malam">Malam</option>
-
                 </select>
-
             </div>
-
             <button class="btn btn-accent" style="width: 100%;" onclick="submitAbsenHadir()">KONFIRMASI</button>
-
             <button class="btn" style="width: 100%; margin-top: 10px; background: none;" onclick="closeAbsenModal()">Batal</button>
-
         </div>
-
     </div>
 
-
-
     <script>
-
         let dbUsers = JSON.parse(localStorage.getItem('hr_final_users')) || [{ nama: "Super Admin", user: "admin", sandi: "admin123", role: "admin" }];
-
         let dbLogs = JSON.parse(localStorage.getItem('hr_final_logs')) || [];
-
         let dbHistory = JSON.parse(localStorage.getItem('hr_final_history')) || [];
-
-        let allowedIPs = JSON.parse(localStorage.getItem('hr_allowed_ips')) || ["103.11.0.1", "127.0.0.1"];
-
+        let allowedIPs = JSON.parse(localStorage.getItem('hr_allowed_ips')) || ["127.0.0.1"];
         let ipSecurityActive = localStorage.getItem('hr_ip_security') === 'true';
 
-
-
         let defaultTimeSet = {
-
             admin: "08:00", marketing: "08:00", crm: "08:00", cs: "08:00", kasir: "08:00",
-
             toilet: "15", beli_makan: "20", rokok_ibadah: "15", istirahat_siang: "60", istirahat_sore: "30",
-
             shift_pagi: "07:00", shift_siang: "14:00", shift_malam: "22:00",
-
             pulang_pagi: "15:00", pulang_siang: "22:00", pulang_malam: "06:00"
-
         };
-
         let dbSettings = JSON.parse(localStorage.getItem('hr_final_settings')) || defaultTimeSet;
 
-
-
         let currentUser = null;
-
-        let userIP = "103.11." + Math.floor(Math.random()*255) + ".1";
-
+        let userIP = "Detecting..."; 
         let tInterval, tSec = 0, tLimit = 0, tAct = "";
 
-
-
-        document.getElementById('ipIndicator').innerText = "Your IP: " + userIP;
-
-
+        // Fungsi Deteksi IP Publik (Statis/Asli)
+        async function getIP() {
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                userIP = data.ip;
+                document.getElementById('ipIndicator').innerText = "Your IP: " + userIP;
+            } catch (err) {
+                userIP = "Offline/Unknown";
+                document.getElementById('ipIndicator').innerText = "IP Detection Failed";
+            }
+        }
+        getIP();
 
         function handleLogin(e) {
-
             e.preventDefault();
-
-            if(ipSecurityActive && !allowedIPs.includes(userIP)) return alert("IP Tidak Terdaftar!");
-
+            if(ipSecurityActive && !allowedIPs.includes(userIP)) return alert("Akses Ditolak! IP " + userIP + " Tidak Terdaftar.");
+            
             const u = document.getElementById('uIn').value, p = document.getElementById('pIn').value;
-
             const found = dbUsers.find(x => x.user === u && x.sandi === p);
-
             if(found) {
-
                 currentUser = found;
-
                 dbLogs.unshift({ nama: found.nama, role: found.role, ip: userIP, time: new Date().toLocaleString() });
-
                 localStorage.setItem('hr_final_logs', JSON.stringify(dbLogs));
-
                 document.getElementById('loginPage').style.display = 'none';
-
                 document.getElementById('mainSystem').style.display = 'flex';
-
                 document.getElementById('userName').innerText = found.nama;
-
                 document.getElementById('userRole').innerText = found.role;
-
                 const isAdmin = found.role === 'admin';
-
                 ['nav-karyawan', 'nav-logs', 'nav-setting-jadwal'].forEach(id => {
-
                     document.getElementById(id).style.display = isAdmin ? 'flex' : 'none';
-
                 });
-
                 showPage('dashboard');
-
             } else { alert("Login Gagal!"); }
-
         }
-
-
 
         function showPage(page) {
-
             const view = document.getElementById('mainView');
-
             document.querySelectorAll('.sidebar li').forEach(l => l.classList.remove('active'));
-
             if(document.getElementById('nav-'+page)) document.getElementById('nav-'+page).classList.add('active');
 
-
-
             if(page === 'dashboard') {
-
                 const isAbsen = localStorage.getItem('status_absen_' + currentUser.user) === 'true';
-
-               
-
-                // Logic Filter Pelanggaran Hari Ini
-
                 const todayISO = new Date().toISOString().split('T')[0];
-
                 const violations = dbHistory.filter(h =>
-
                     h.isoDate === todayISO &&
-
                     (h.status.includes('Melebihi') || h.status.includes('Terlambat'))
-
                 );
 
-
-
                 view.innerHTML = `
-
                     <h1>Dashboard</h1>
-
                     <div class="grid">
-
                         <div class="glass card-action ${isAbsen ? 'locked' : ''}" onclick="${isAbsen ? '' : 'openAbsenModal()'}">
-
                             <i class="fa fa-fingerprint"></i><h3>Absen Hadir</h3>${isAbsen ? '<small style="color:var(--success)">HADIR</small>' : '<small>Masuk</small>'}
-
                         </div>
-
                         <div class="glass card-action" onclick="handlePulang()"><i class="fa fa-door-open"></i><h3>Absen Pulang</h3><small>Selesai</small></div>
-
                     </div>
-
-                   
-
+                    
                     <div class="section-title"><i class="fa fa-clock-rotate-left"></i> Izin Karyawan</div>
-
                     <div class="grid">
-
                         <div class="glass card-action" onclick="startIzin('Toilet', dbSettings.toilet)"><i class="fa fa-restroom"></i><h3>Toilet</h3><small>${dbSettings.toilet}m</small></div>
-
                         <div class="glass card-action" onclick="startIzin('Beli Makan', dbSettings.beli_makan)"><i class="fa fa-utensils"></i><h3>Beli Makan</h3><small>${dbSettings.beli_makan}m</small></div>
-
                         <div class="glass card-action" onclick="startIzin('Merokok/Ibadah', dbSettings.rokok_ibadah)"><i class="fa fa-person-praying"></i><h3>Merokok</h3><small>${dbSettings.rokok_ibadah}m</small></div>
-
                         <div class="glass card-action" onclick="startIzin('Istirahat Siang', dbSettings.istirahat_siang)"><i class="fa fa-sun"></i><h3>Istrht Siang</h3><small>${dbSettings.istirahat_siang}m</small></div>
-
                         <div class="glass card-action" onclick="startIzin('Istirahat Sore', dbSettings.istirahat_sore)"><i class="fa fa-cloud-sun"></i><h3>Istrht Sore</h3><small>${dbSettings.istirahat_sore}m</small></div>
-
                     </div>
-
-
 
                     <div class="section-title"><i class="fa fa-exclamation-triangle" style="color:var(--danger)"></i> Info Pelanggaran Hari Ini</div>
-
                     <div class="glass" style="padding:20px; margin-top:10px; min-height:150px;">
-
                         <table style="margin-top:0;">
-
                             <thead>
-
                                 <tr>
-
                                     <th>Nama Karyawan</th>
-
                                     <th>Jenis Pelanggaran</th>
-
                                     <th>Status Pelanggaran</th>
-
                                     <th>Waktu</th>
-
                                     <th>Durasi/Kelebihan</th>
-
                                 </tr>
-
                             </thead>
-
                             <tbody>
-
                                 ${violations.length > 0 ? violations.map(v => `
-
                                     <tr>
-
                                         <td>${v.nama}</td>
-
                                         <td>${v.kategori}</td>
-
                                         <td><span class="badge bg-danger">${v.status}</span></td>
-
                                         <td>${v.waktu}</td>
-
                                         <td>${v.durasi}</td>
-
                                     </tr>
-
                                 `).join('') : '<tr><td colspan="5" style="text-align:center; opacity:0.5;">Tidak ada pelanggaran hari ini.</td></tr>'}
-
                             </tbody>
-
                         </table>
-
                     </div>
-
                 `;
-
             }
-
             else if(page === 'history') { renderHistoryPage(); }
-
             else if(page === 'setting-jadwal') {
-
                 view.innerHTML = `<h1>Setting Jadwal</h1><div class="glass" style="padding:20px; margin-top:20px;">
-
                     <div class="section-title">1. Jam Masuk Divisi</div>
-
                     ${['admin','marketing','crm','cs','kasir'].map(d=>`<div class="setting-card glass"><label>${d.toUpperCase()}</label><div style="display:flex;gap:5px"><input type="time" id="s_${d}" class="input-box" value="${dbSettings[d]}"><button class="btn btn-accent" onclick="saveS('${d}')">SAVE</button></div></div>`).join('')}
-
                     <div class="section-title">2. Durasi Izin (Menit)</div>
-
                     ${['toilet','beli_makan','rokok_ibadah','istirahat_siang','istirahat_sore'].map(i=>`<div class="setting-card glass"><label>${i.replace('_',' ').toUpperCase()}</label><div style="display:flex;gap:5px"><input type="number" id="s_${i}" class="input-box" value="${dbSettings[i]}"><button class="btn btn-accent" onclick="saveS('${i}')">SAVE</button></div></div>`).join('')}
-
                     <div class="section-title">3. Jam Masuk Shift</div>
-
                     ${['pagi','siang','malam'].map(s=>`<div class="setting-card glass"><label>MASUK ${s.toUpperCase()}</label><div style="display:flex;gap:5px"><input type="time" id="s_shift_${s}" class="input-box" value="${dbSettings['shift_'+s]}"><button class="btn btn-accent" onclick="saveS('shift_${s}')">SAVE</button></div></div>`).join('')}
-
                     <div class="section-title">4. Jam Pulang Shift</div>
-
                     ${['pagi','siang','malam'].map(s=>`<div class="setting-card glass"><label>PULANG ${s.toUpperCase()}</label><div style="display:flex;gap:5px"><input type="time" id="s_pulang_${s}" class="input-box" value="${dbSettings['pulang_'+s]}"><button class="btn btn-accent" onclick="saveS('pulang_'+s)')">SAVE</button></div></div>`).join('')}
-
                 </div>`;
-
             }
-
             else if(page === 'karyawan') {
-
                 let rows = dbUsers.map((k, i) => `<tr><td>${k.nama}</td><td>${k.user}</td><td>••••••</td><td>${k.role}</td><td><button class="btn-warning" style="padding:5px 10px; border-radius:5px; margin-right:5px; font-size:10px;" onclick="openEditModal(${i})"><i class="fa fa-edit"></i> Edit</button><button class="btn-danger" style="padding:5px 10px; border-radius:5px; font-size:10px;" onclick="delK(${i})"><i class="fa fa-trash"></i> Hapus</button></td></tr>`).join('');
-
                 view.innerHTML = `<h1>Manajemen Karyawan</h1><div class="glass" style="padding:20px; margin-top:20px; display:flex; gap:10px;"><input id="nk" class="input-box" placeholder="Nama"><input id="uk" class="input-box" placeholder="User ID"><input id="sk" class="input-box" placeholder="Sandi"><select id="rk" class="input-box"><option value="karyawan">Karyawan</option><option value="admin">Admin</option></select><button class="btn btn-accent" onclick="addK()">ADD</button></div><div class="glass" style="margin-top:20px; padding:20px;"><table><thead><tr><th>Nama</th><th>User</th><th>Sandi</th><th>Role</th><th>Aksi</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-
             }
-
             else if(page === 'logs') {
-
                 view.innerHTML = `<h1>Log & Security</h1><div class="glass" style="padding:20px; margin-top:20px; border:1px solid var(--accent)"><h3>Whitelist IP</h3><div style="display:flex; gap:10px; margin:15px 0;"><input id="newIP" class="input-box" style="flex:1" placeholder="IP Address"><button class="btn btn-accent" onclick="addIP()">DAFTAR</button><button class="btn ${ipSecurityActive?'btn-danger':'btn-accent'}" onclick="toggleIPSec()">${ipSecurityActive?'OFF':'ON'}</button></div><div style="display:flex; flex-wrap:wrap; gap:5px">${allowedIPs.map((ip, i)=>`<span class="badge bg-success">${ip} <i class="fa fa-times" onclick="delIP(${i})"></i></span>`).join('')}</div></div><div class="glass" style="margin-top:20px; padding:20px;"><table><thead><tr><th>Nama</th><th>IP</th><th>Waktu</th></tr></thead><tbody>${dbLogs.map(l=>`<tr><td>${l.nama}</td><td>${l.ip}</td><td>${l.time}</td></tr>`).join('')}</tbody></table></div>`;
-
             }
-
         }
-
-
 
         // --- HISTORY RENDER ---
-
         function renderHistoryPage(filterData = null) {
-
             const view = document.getElementById('mainView');
-
             const dataToRender = filterData || dbHistory;
-
             view.innerHTML = `<h1>History Aktivitas</h1><div class="glass" style="padding:20px; margin-top:20px;"><div class="filter-container"><div class="filter-group"><label>Kategori</label><select id="fCat" class="input-box"><option value="semua">Semua</option><option value="Absen Hadir">Absen Hadir</option><option value="Absen Pulang">Absen Pulang</option><option value="Izin">Izin</option></select></div><div class="filter-group"><label>Karyawan</label><input type="text" id="fUser" class="input-box" placeholder="Nama..."></div><div class="filter-group"><label>Tgl Awal</label><input type="date" id="fStart" class="input-box"></div><div class="filter-group"><label>Tgl Akhir</label><input type="date" id="fEnd" class="input-box"></div><button class="btn btn-accent" onclick="applyHistoryFilter()">CARI</button></div><table><thead><tr><th>Karyawan</th><th>Aksi</th><th>Status</th><th>Waktu</th><th>Durasi</th></tr></thead><tbody>${dataToRender.map(h => `<tr><td>${h.nama}</td><td>${h.kategori}</td><td><span class="badge ${h.status.includes('Melebihi')?'bg-danger':'bg-success'}">${h.status}</span></td><td>${h.tgl}<br><small>${h.waktu}</small></td><td>${h.durasi}</td></tr>`).join('')}</tbody></table></div>`;
-
         }
-
-
 
         function applyHistoryFilter() {
-
             const cat = document.getElementById('fCat').value, user = document.getElementById('fUser').value.toLowerCase(), start = document.getElementById('fStart').value, end = document.getElementById('fEnd').value;
-
             const filtered = dbHistory.filter(h => {
-
                 const matchCat = (cat === 'semua') || (cat === 'Izin' ? h.kategori.includes('Izin') : h.kategori === cat);
-
                 const matchUser = h.nama.toLowerCase().includes(user);
-
                 let matchDate = true;
-
                 if(start) matchDate = matchDate && (h.isoDate >= start);
-
                 if(end) matchDate = matchDate && (h.isoDate <= end);
-
                 return matchCat && matchUser && matchDate;
-
             });
-
             renderHistoryPage(filtered);
-
         }
-
-
 
         // --- CORE FUNCTIONS ---
-
         function startIzin(n, m) {
-
             tSec=0; tLimit=parseInt(m)*60; tAct=n;
-
             document.getElementById('timerName').innerText="Izin: "+n;
-
             document.getElementById('timerModal').style.display='flex';
-
             clearInterval(tInterval);
-
             tInterval = setInterval(() => {
-
                 tSec++;
-
                 let mm=Math.floor(tSec/60).toString().padStart(2,'0'), ss=(tSec%60).toString().padStart(2,'0');
-
                 document.getElementById('timerDisplay').innerText=`00:${mm}:${ss}`;
-
                 if(tSec > tLimit) document.getElementById('timerDisplay').style.color='var(--danger)';
-
             }, 1000);
-
         }
-
-
 
         function stopIzin() {
-
             clearInterval(tInterval);
-
             let mm = Math.floor(tSec/60), ss = tSec % 60;
-
             let dur = `${mm}m ${ss}s`;
-
             let stat = (tSec > tLimit) ? "Melebihi Waktu" : "Tepat Waktu";
-
             recordHistory(`Izin ${tAct}`, stat, dur);
-
             document.getElementById('timerModal').style.display='none';
-
             document.getElementById('timerDisplay').style.color='var(--accent)';
-
-            showPage('dashboard'); // Refresh Dashboard
-
+            showPage('dashboard');
         }
-
-
 
         function recordHistory(kat, stat, dur = "-") {
-
             const now = new Date();
-
             dbHistory.unshift({
-
                 nama: currentUser.nama, kategori: kat, status: stat, durasi: dur,
-
                 tgl: now.toLocaleDateString('id-ID'), waktu: now.toLocaleTimeString('id-ID'),
-
                 isoDate: now.toISOString().split('T')[0]
-
             });
-
             localStorage.setItem('hr_final_history', JSON.stringify(dbHistory));
-
         }
-
-
 
         function submitAbsenHadir() {
-
             const div = document.getElementById('selDivisi').value;
-
-            const shift = document.getElementById('selShift').value;
-
             const now = new Date();
-
             const currentTime = now.getHours() + ":" + now.getMinutes().toString().padStart(2,'0');
-
             const limit = dbSettings[div];
-
-           
-
+            
             let status = (currentTime > limit) ? "Terlambat" : "Tepat Waktu";
-
             let diff = "-";
-
-           
-
+            
             if(status === "Terlambat") {
-
                 const [h1, m1] = currentTime.split(':'), [h2, m2] = limit.split(':');
-
                 diff = ((h1*60 + parseInt(m1)) - (h2*60 + parseInt(m2))) + " Menit";
-
             }
 
-
-
             localStorage.setItem('status_absen_' + currentUser.user, 'true');
-
             recordHistory("Absen Hadir", status, diff);
-
             closeAbsenModal();
-
             showPage('dashboard');
-
         }
 
-
-
         // --- UTILS ---
-
         function openEditModal(i) { const u = dbUsers[i]; document.getElementById('editIdx').value=i; document.getElementById('en').value=u.nama; document.getElementById('eu').value=u.user; document.getElementById('es').value=u.sandi; document.getElementById('er').value=u.role; document.getElementById('editModal').style.display='flex'; }
-
         function closeEditModal() { document.getElementById('editModal').style.display='none'; }
-
         function saveEdit() { const i=document.getElementById('editIdx').value; dbUsers[i].nama=document.getElementById('en').value; dbUsers[i].user=document.getElementById('eu').value; dbUsers[i].sandi=document.getElementById('es').value; dbUsers[i].role=document.getElementById('er').value; localStorage.setItem('hr_final_users', JSON.stringify(dbUsers)); closeEditModal(); showPage('karyawan'); }
-
         function saveS(k) { dbSettings[k]=document.getElementById('s_'+k).value; localStorage.setItem('hr_final_settings', JSON.stringify(dbSettings)); alert("Saved!"); }
-
         function addK() { const n=document.getElementById('nk').value, u=document.getElementById('uk').value, s=document.getElementById('sk').value, r=document.getElementById('rk').value; if(n&&u&&s){ dbUsers.push({nama:n, user:u, sandi:s, role:r}); localStorage.setItem('hr_final_users', JSON.stringify(dbUsers)); showPage('karyawan'); } }
-
         function delK(i) { if(confirm("Hapus?")){ dbUsers.splice(i,1); localStorage.setItem('hr_final_users', JSON.stringify(dbUsers)); showPage('karyawan'); } }
-
         function addIP() { const ip=document.getElementById('newIP').value; if(ip){ allowedIPs.push(ip); localStorage.setItem('hr_allowed_ips', JSON.stringify(allowedIPs)); showPage('logs'); } }
-
         function delIP(i) { allowedIPs.splice(i,1); localStorage.setItem('hr_allowed_ips', JSON.stringify(allowedIPs)); showPage('logs'); }
-
         function toggleIPSec() { ipSecurityActive=!ipSecurityActive; localStorage.setItem('hr_ip_security', ipSecurityActive); showPage('logs'); }
-
         function openAbsenModal() { document.getElementById('absenModal').style.display='flex'; }
-
         function closeAbsenModal() { document.getElementById('absenModal').style.display='none'; }
-
         function handlePulang() { if(localStorage.getItem('status_absen_' + currentUser.user) !== 'true') return alert("Belum Absen!"); recordHistory("Absen Pulang", "Tepat Waktu"); localStorage.removeItem('status_absen_' + currentUser.user); showPage('dashboard'); }
-
     </script>
-
 </body>
-
 </html>
