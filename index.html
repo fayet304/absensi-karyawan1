@@ -1,1501 +1,715 @@
 <!DOCTYPE html>
+
 <html lang="id">
+
 <head>
+
     <meta charset="UTF-8" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login & Menu Utama</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <title>HR GLASS ULTIMATE FINAL SYSTEM 2026</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
     <style>
+
         :root {
-            --primary-color: #0d1a2b; /* Dark Navy */
-            --secondary-color: #f4f4f4; /* Off-White */
-            --accent-color: #c9a76d; /* Muted Gold */
-            --success-color: #4a90e2; /* Soft Blue */
-            --danger-color: #d0021b; /* Dark Red */
-            --text-dark-color: #333333;
-            --text-light-color: #f4f4f4;
-            --bg-dark-color: #121212;
-            --bg-light-color: #f9f9f9;
-            --shadow-color: rgba(0, 0, 0, 0.15);
-            --warning-color: #e74c3c; /* A strong red for warning */
+
+            --glass: rgba(255, 255, 255, 0.1);
+
+            --glass-heavy: rgba(255, 255, 255, 0.15);
+
+            --border: rgba(255, 255, 255, 0.2);
+
+            --accent: #00d2ff;
+
+            --danger: #ff4b2b;
+
+            --warning: #ffcc00;
+
+            --success: #00ff88;
+
         }
 
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            font-family: 'Poppins', sans-serif;
-            color: var(--text-dark-color);
-        }
+
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 
         body {
-            background: linear-gradient(rgba(18, 18, 18, 0.8), rgba(18, 18, 18, 0.8)), url('https://images.unsplash.com/photo-1542831371-29b0f74f9713?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') no-repeat center center fixed;
-            background-size: cover;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            overflow: hidden;
-            transition: background-color 0.5s ease;
+
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+
+            background-attachment: fixed; min-height: 100vh; display: flex;
+
+            justify-content: center; align-items: center; color: white; overflow: hidden;
+
         }
 
-        .login-container {
-            max-width: 450px;
-            width: 90%;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 50px;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px var(--shadow-color);
-            text-align: center;
-            animation: fadeIn 0.8s ease-in-out;
-            border: 1px solid #e0e0e0;
+
+
+        .glass { background: var(--glass); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid var(--border); border-radius: 20px; }
+
+       
+
+        #loginPage { width: 380px; padding: 40px; text-align: center; }
+
+        #mainSystem { display: none; width: 98%; height: 95vh; }
+
+       
+
+        .sidebar { width: 260px; padding: 30px; border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+
+        .sidebar li {
+
+            padding: 15px; list-style: none; margin-bottom: 8px; border-radius: 12px; cursor: pointer; transition: 0.3s;
+
+            display: flex; align-items: center; gap: 12px; font-size: 14px;
+
         }
 
-        .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 38px;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 30px;
-            text-transform: none;
-            letter-spacing: 2px;
-        }
+        .sidebar li:hover, .sidebar li.active { background: var(--glass-heavy); color: var(--accent); }
 
-        .logo span {
-            color: var(--accent-color);
-        }
 
-        .form-group {
-            margin-bottom: 25px;
-            text-align: left;
-        }
 
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 15px 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            box-sizing: border-box;
-            background-color: #fefefe;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
+        .content-area { flex-grow: 1; padding: 30px; overflow-y: auto; }
 
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 8px rgba(201, 167, 109, 0.3);
-            outline: none;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
-        }
 
-        .login-btn {
-            width: 100%;
-            padding: 16px;
-            background-color: var(--primary-color);
-            border: none;
-            border-radius: 10px;
-            color: var(--text-light-color);
-            font-size: 17px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s ease-in-out, transform 0.2s;
-            margin-top: 15px;
-            letter-spacing: 1px;
-        }
 
-        .login-btn:hover {
-            background-color: var(--accent-color);
-            transform: translateY(-2px);
-        }
+        .btn { padding: 12px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
 
-        .link-bawah {
-            margin-top: 30px;
-            color: #888;
-            font-size: 15px;
-            user-select: none;
-        }
+        .btn-accent { background: var(--accent); color: #0f2027; }
 
-        .link-bawah span {
-            color: var(--primary-color);
-            cursor: pointer;
-            margin: 0 10px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s;
-        }
+        .btn-danger { background: var(--danger); color: white; }
 
-        .link-bawah span:hover {
-            color: var(--accent-color);
-        }
+        .btn-warning { background: var(--warning); color: #000; }
 
-        /* Modal styling */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.4s ease, visibility 0.4s;
-        }
+        .input-box { padding: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; color: white; outline: none; border: 1px solid var(--border); }
 
-        .modal.open {
-            opacity: 1;
-            visibility: visible;
-        }
+       
 
-        .modal-content {
-            background-color: var(--bg-light-color);
-            padding: 40px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-            position: relative;
-            transform: scale(0.95);
-            transition: transform 0.4s ease;
-            text-align: center;
-        }
-        
-        .modal-content form button {
-            width: 100%;
-            padding: 16px;
-            background-color: var(--primary-color);
-            border: none;
-            border-radius: 10px;
-            color: var(--text-light-color);
-            font-size: 17px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s ease-in-out, transform 0.2s;
-            margin-top: 15px;
-        }
-        
-        .modal-content form button:hover {
-            background-color: var(--accent-color);
-            transform: translateY(-2px);
-        }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-top: 20px; }
 
-        .modal.open .modal-content {
-            transform: scale(1);
-        }
+        .card-action { padding: 25px; text-align: center; cursor: pointer; transition: 0.3s; border: 1px solid var(--border); position: relative; }
 
-        .modal-content h2 {
-            margin-top: 0;
-            margin-bottom: 30px;
-            color: var(--primary-color);
-            font-family: 'Playfair Display', serif;
-            font-size: 28px;
-            letter-spacing: 1px;
-        }
+        .card-action:hover:not(.locked) { background: var(--glass-heavy); transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
 
-        .close-btn {
-            position: absolute;
-            top: 15px;
-            right: 25px;
-            font-size: 30px;
-            font-weight: 600;
-            color: #aaa;
-            cursor: pointer;
-            user-select: none;
-            transition: color 0.3s;
-        }
+        .card-action i { font-size: 30px; color: var(--accent); margin-bottom: 12px; }
 
-        .close-btn:hover {
-            color: #555;
-        }
+        .locked { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); }
 
-        /* Menu styling */
-        .menu-wrapper {
-            display: none;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-            background-color: var(--bg-light-color);
-        }
 
-        .sidebar {
-            width: 300px;
-            background-color: var(--primary-color);
-            color: var(--text-light-color);
-            padding: 30px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.3);
-            font-family: 'Poppins', sans-serif;
-        }
 
-        .sidebar h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 24px;
-            margin-bottom: 30px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            padding-bottom: 15px;
-            user-select: none;
-        }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
 
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            flex-grow: 1;
-        }
+        th { text-align: left; color: var(--accent); padding: 12px; border-bottom: 2px solid var(--border); font-size: 12px; text-transform: uppercase; }
 
-        .sidebar ul li {
-            margin: 20px 0;
-            cursor: pointer;
-            font-size: 17px;
-            user-select: none;
-            position: relative;
-            padding-left: 30px;
-            transition: color 0.3s;
-        }
+        td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 12px; }
 
-        .sidebar ul li:hover {
-            color: var(--accent-color);
-        }
+       
 
-        .sidebar ul li::before {
-            content: "\2022";
-            position: absolute;
-            left: 0;
-            color: var(--accent-color);
-            font-size: 20px;
-        }
-        
-        .sidebar ul li:hover::before {
-            content: ">";
-        }
-        
-        .sidebar ul li:last-child {
-            margin-top: auto;
-            color: var(--danger-color);
-            font-weight: 600;
-        }
+        .badge { padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; }
 
-        .sidebar ul li:last-child::before {
-            content: "🔒";
-            color: var(--danger-color);
-        }
+        .bg-danger { background: var(--danger); color: white; }
 
-        .content {
-            flex-grow: 1;
-            padding: 50px;
-            overflow-y: auto;
-            box-sizing: border-box;
-            background-color: var(--bg-light-color);
-            transition: opacity 0.5s ease;
-        }
+        .bg-success { background: var(--success); color: #000; }
 
-        .content h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 32px;
-            margin-bottom: 30px;
-            color: var(--primary-color);
-        }
-        
-        .content-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-        .content-header h1 {
-            margin-bottom: 0;
-        }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            margin-top: 25px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        }
 
-        th, td {
-            padding: 18px;
-            border-bottom: 1px solid #eee;
-            text-align: left;
-        }
-        td {
-            font-size: 15px;
-        }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; }
 
-        thead {
-            background-color: var(--primary-color);
-            color: var(--text-light-color);
-        }
+        .timer-val { font-size: 50px; font-weight: bold; margin: 20px 0; color: var(--accent); font-family: monospace; }
 
-        .floating-box {
-            background: white;
-            border: 1px solid #e0e0e0;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 2px 15px var(--shadow-color);
-            margin-bottom: 30px;
-        }
-        
-        .btn-blue {
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 14px 25px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s;
-            margin-top: 15px;
-        }
+        .section-title { margin-top:30px; border-left:4px solid var(--accent); padding-left:15px; font-size: 16px; color: var(--accent); margin-bottom: 15px; }
 
-        .btn-blue:hover {
-            background-color: #b8935c;
-        }
+       
 
-        #welcomeMessage {
-            margin-top: 30px;
-            padding: 25px;
-            background-color: #e6f7ff;
-            color: #004085;
-            border-left: 5px solid #0056b3;
-            border-radius: 8px;
-            font-weight: 600;
-            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
-            animation: fadeIn 1s ease forwards;
-        }
+        .filter-container { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; align-items: flex-end; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .filter-group { display: flex; flex-direction: column; gap: 5px; }
 
-        .edit-btn, .delete-btn {
-            border: none;
-            padding: 10px 16px;
-            border-radius: 8px;
-            color: white;
-            cursor: pointer;
-            margin-right: 8px;
-            font-weight: 600;
-            transition: background 0.3s, transform 0.2s;
-        }
-        .edit-btn { background-color: var(--accent-color); }
-        .edit-btn:hover { background-color: #b8935c; transform: translateY(-1px); }
-        .delete-btn { background-color: var(--danger-color); }
-        .delete-btn:hover { background-color: #b30018; transform: translateY(-1px); }
+        .filter-group label { font-size: 10px; color: var(--accent); font-weight: 600; }
 
-        /* Animation for Timer */
-        #izinTimerContainer.start-timer .timer-wrapper {
-            animation: timerStart 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-        }
-        
-        #izinTimerContainer.stop-timer .timer-wrapper {
-            animation: timerStop 0.5s ease-in forwards;
-        }
-        
-        #timer-container {
-            margin-top: 40px;
-            padding: 30px;
-            border: 2px solid var(--accent-color);
-            border-radius: 12px;
-            text-align: center;
-            background-color: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
-            transition: border-color 0.4s, background-color 0.4s, box-shadow 0.4s;
-        }
-
-        #timer-container.warning {
-            border: 2px solid var(--warning-color);
-            background-color: rgba(255, 235, 235, 0.95);
-            box-shadow: 0 0 25px rgba(231, 76, 60, 0.4);
-            animation: pulseWarning 1.5s infinite;
-        }
-
-        #timer-display {
-            font-family: 'Playfair Display', serif;
-            font-size: 4em;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin: 15px 0;
-            transition: transform 0.3s ease-in-out;
-        }
-        #timer-display:hover {
-            transform: scale(1.03);
-        }
-
-        #timer-info {
-            font-size: 1.4em;
-            color: #555;
-            margin-bottom: 25px;
-            font-weight: 300;
-        }
-
-        .timer-btn {
-            padding: 16px 30px;
-            font-size: 17px;
-            font-weight: bold;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .timer-btn.stop {
-            background-color: var(--danger-color);
-            color: white;
-            animation: pulse 1.5s infinite;
-        }
-        .timer-btn.stop:hover {
-            background-color: #b30018;
-            animation: none;
-        }
-        
-        #timer-alert {
-            font-weight: 600;
-            color: var(--warning-color);
-            margin-top: 15px;
-            font-size: 1.1em;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        /* Keyframes for animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes timerStart {
-            0% { transform: scale(0.8); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        @keyframes timerStop {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(1.1); opacity: 0; }
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(208, 2, 27, 0.4); }
-            70% { box-shadow: 0 0 0 20px rgba(208, 2, 27, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(208, 2, 27, 0); }
-        }
-
-        @keyframes pulseWarning {
-            0% { box-shadow: 0 0 15px rgba(231, 76, 60, 0.4); }
-            50% { box-shadow: 0 0 25px rgba(231, 76, 60, 0.6); }
-            100% { box-shadow: 0 0 15px rgba(231, 76, 60, 0.4); }
-        }
-
-        /* New Styles for Aktivitas Baru Karyawan */
-        .aktivitas-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            margin-top: 30px;
-        }
-
-        .aktivitas-card {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid #e0e0e0;
-        }
-
-        .aktivitas-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-        }
-
-        .aktivitas-card .icon {
-            font-size: 5em;
-            color: var(--primary-color);
-            margin-bottom: 20px;
-            transition: color 0.3s;
-        }
-
-        .aktivitas-card:hover .icon {
-            color: var(--accent-color);
-        }
-
-        .aktivitas-card.izin .icon { color: var(--accent-color); }
-        .aktivitas-card.pulang .icon { color: var(--danger-color); }
-
-        /* Modal styling with icons */
-        .modal-content .izin-options {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .modal-content .izin-options .izin-btn {
-            background-color: var(--accent-color);
-            color: white;
-            padding: 18px;
-            border-radius: 10px;
-            border: none;
-            font-size: 17px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        .modal-content .izin-options .izin-btn:hover {
-            background-color: #b8935c;
-        }
-        .modal-content .izin-options .izin-btn .fa-solid {
-            margin-right: 15px;
-            vertical-align: middle;
-        }
-
-        /* Modal for Absen Masuk */
-        .shift-options {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .shift-options .shift-btn {
-            background-color: var(--success-color);
-            color: white;
-            padding: 18px;
-            border-radius: 10px;
-            border: none;
-            font-size: 17px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        .shift-options .shift-btn:hover {
-            background-color: #3b74b6;
-        }
-
-        /* Modal for Absen Pulang */
-        .pulang-modal-content h2 {
-            color: var(--danger-color);
-        }
-        .pulang-message {
-            margin-bottom: 30px;
-            font-size: 1.1em;
-            line-height: 1.6;
-            color: #555;
-        }
-        .pulang-btn {
-            background-color: var(--danger-color);
-            color: white;
-            padding: 18px 35px;
-            font-size: 18px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        .pulang-btn:hover {
-            background-color: #b30018;
-        }
-
-        /* New CSS for the new timer layout */
-        .timer-wrapper {
-            margin-top: 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        /* CAPTCHA Styles */
-        .captcha-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        #captchaText {
-            font-family: 'Playfair Display', serif;
-            font-size: 24px;
-            font-weight: bold;
-            color: #f4f4f4;
-            background-color: #555;
-            padding: 5px 10px;
-            border-radius: 5px;
-            letter-spacing: 2px;
-            user-select: none;
-            cursor: pointer;
-        }
-        #refreshCaptcha {
-            background-color: #ccc;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.2em;
-        }
-        #refreshCaptcha:hover {
-            background-color: #bbb;
-        }
-
-        .captcha-input {
-            margin-top: 10px;
-        }
     </style>
+
 </head>
+
 <body>
 
-    <div class="login-container" id="loginPage">
-        <div class="logo">Manajemen <span>Karyawan</span></div>
+
+
+    <div id="loginPage" class="glass">
+
+        <h2 style="margin-bottom: 20px;">HR<span style="color:var(--accent)">GLASS</span></h2>
+
+        <div id="ipIndicator" style="font-size: 10px; margin-bottom: 10px; color: var(--accent);">Your IP: Detecting...</div>
+
         <form onsubmit="handleLogin(event)">
-            <div class="form-group">
-                <label for="username">Nama Lengkap</label>
-                <input type="text" id="username" placeholder="Masukkan nama lengkap Anda" required />
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" placeholder="Masukkan password Anda" required />
-            </div>
-            <button type="submit" class="login-btn">Login</button>
+
+            <input type="text" id="uIn" class="input-box" style="width:100%; margin-bottom:15px;" placeholder="User ID" required>
+
+            <input type="password" id="pIn" class="input-box" style="width:100%; margin-bottom:20px;" placeholder="Password" required>
+
+            <button type="submit" class="btn btn-accent" style="width:100%">LOGIN</button>
+
         </form>
-        <div class="link-bawah">
-            <span onclick="openModal('modalLupa')">Lupa password?</span> | 
-            <span onclick="openModal('modalDaftar')">Daftar akun</span>
-        </div>
+
     </div>
 
-    <div class="menu-wrapper" id="menuPage">
+
+
+    <div id="mainSystem" class="glass">
+
         <div class="sidebar">
-            <h2>MENU UTAMA</h2>
-            <ul>
-                <li id="menuDataUser" onclick="showPage('tambahPemain')">Data User</li>
-                <li onclick="showPage('riwayatLogin')">Riwayat Login</li>
-                <li onclick="showPage('aktivitasBaru')">Aktivitas Baru</li>
-                <li onclick="showPage('historyAktivitas')">History Aktivitas</li>
-                <li onclick="logout()">Logout</li>
+
+            <h2 style="margin-bottom: 20px;">HR<span style="color:var(--accent)">PRO</span></h2>
+
+            <div id="userBadge" style="margin-bottom: 20px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px; text-align: center;">
+
+                <p id="userName" style="font-weight: 600; font-size: 14px;">Name</p>
+
+                <span id="userRole" style="font-size: 10px; color: var(--accent); text-transform: uppercase;">Role</span>
+
+            </div>
+
+            <ul id="navMenu">
+
+                <li onclick="showPage('dashboard')" id="nav-dashboard" class="active"><i class="fa fa-home"></i> Dashboard</li>
+
+                <li onclick="showPage('karyawan')" id="nav-karyawan"><i class="fa fa-users"></i> Karyawan</li>
+
+                <li onclick="showPage('logs')" id="nav-logs"><i class="fa fa-shield-alt"></i> Catatan Log</li>
+
+                <li onclick="showPage('setting-jadwal')" id="nav-setting-jadwal"><i class="fa fa-calendar-check"></i> Setting Jadwal</li>
+
+                <li onclick="showPage('history')" id="nav-history"><i class="fa fa-history"></i> History Aktivitas</li>
+
+                <li onclick="location.reload()" style="margin-top:auto; color: var(--danger);"><i class="fa fa-power-off"></i> Logout</li>
+
             </ul>
+
         </div>
-        <div class="content" id="contentArea"></div>
+
+        <div class="content-area" id="mainView"></div>
+
     </div>
 
-    
-    <div id="modalDaftar" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('modalDaftar')">&times;</span>
-            <h2>Daftar Akun Baru</h2>
-            <form id="formDaftar" onsubmit="handleDaftar(event)">
-                <div class="form-group">
-                    <label for="daftarUsername">Username:</label>
-                    <input type="text" id="daftarUsername" required />
-                </div>
-                <div class="form-group">
-                    <label for="daftarDivisi">Divisi:</label>
-                    <input type="text" id="daftarDivisi" required />
-                </div>
-                <div class="form-group">
-                    <label for="daftarEmail">Email:</label>
-                    <input type="email" id="daftarEmail" required />
-                </div>
-                <div class="form-group">
-                    <label>Verifikasi CAPTCHA:</label>
-                    <div class="captcha-group">
-                        <span id="captchaText" onclick="generateCaptcha()"></span>
-                        <button type="button" id="refreshCaptcha" onclick="generateCaptcha()"><i class="fa-solid fa-sync-alt"></i></button>
-                    </div>
-                    <input type="text" id="captchaInput" class="captcha-input" placeholder="Masukkan kode di atas" required />
-                </div>
 
-                <button type="submit">Daftar</button>
-            </form>
-            <div id="daftarMessage" style="margin-top:15px; text-align: center;"></div>
+
+    <div id="editModal" class="modal">
+
+        <div class="glass" style="padding: 30px; width: 400px;">
+
+            <h2 style="margin-bottom: 20px; color: var(--accent); text-align: center;">Edit Profil Karyawan</h2>
+
+            <input type="hidden" id="editIdx">
+
+            <div style="margin-bottom:15px;"><label style="font-size: 11px;">Nama:</label><input type="text" id="en" class="input-box" style="width: 100%;"></div>
+
+            <div style="margin-bottom:15px;"><label style="font-size: 11px;">User ID:</label><input type="text" id="eu" class="input-box" style="width: 100%;"></div>
+
+            <div style="margin-bottom:15px;"><label style="font-size: 11px;">Sandi:</label><input type="text" id="es" class="input-box" style="width: 100%;"></div>
+
+            <div style="margin-bottom:20px;"><label style="font-size: 11px;">Role:</label><select id="er" class="input-box" style="width: 100%;"><option value="karyawan">Karyawan</option><option value="admin">Admin</option></select></div>
+
+            <button class="btn btn-accent" style="width: 100%;" onclick="saveEdit()">SIMPAN</button>
+
+            <button class="btn" style="width: 100%; margin-top: 10px; background: none;" onclick="closeEditModal()">Batal</button>
+
         </div>
+
     </div>
 
-    
-    <div id="modalLupa" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('modalLupa')">&times;</span>
-            <h2>Lupa Password</h2>
-            <p>Silakan hubungi administrator Anda untuk mendapatkan bantuan reset password.</p>
+
+
+    <div id="timerModal" class="modal">
+
+        <div class="glass" style="padding: 40px; text-align: center; width: 400px;">
+
+            <h2 id="timerName">Izin</h2>
+
+            <div id="timerDisplay" class="timer-val">00:00:00</div>
+
+            <button class="btn btn-danger" style="width: 100%;" onclick="stopIzin()">STOP / SELESAI</button>
+
         </div>
+
     </div>
 
-    <div id="modalEditUser" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('modalEditUser')">&times;</span>
-            <h2>Edit Data User</h2>
-            <form id="formEditUser" onsubmit="submitEditUser(event)">
-                <input type="hidden" id="editOriginalUsername" />
-                <div class="form-group">
-                    <label for="editRole">Role:</label>
-                    <select id="editRole">
-                        <option value="User">User</option>
-                        <option value="Admin">Admin</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="editShift">Shift:</label>
-                    <select id="editShift">
-                        <option value="Pagi">Pagi</option>
-                        <option value="Siang">Siang</option>
-                        <option value="Malam">Malam</option>
-                        <option value="">-</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="editUsername">Username:</label>
-                    <input type="text" id="editUsername" required />
-                </div>
-                <div class="form-group">
-                    <label for="editPassword">Password:</label>
-                    <input type="text" id="editPassword" required />
-                </div>
-                <div class="form-group">
-                    <label for="editDivisi">Divisi:</label>
-                    <input type="text" id="editDivisi" />
-                </div>
-                <div class="form-group">
-                    <label for="editEmail">Email:</label>
-                    <input type="email" id="editEmail" />
-                </div>
-                <button type="submit" class="btn-blue">Simpan Perubahan</button>
-            </form>
-            <div id="editMessage" style="margin-top:15px; text-align: center;"></div>
-        </div>
-    </div>
 
-    <div id="modalPilihanIzin" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('modalPilihanIzin')">&times;</span>
-            <h2>Pilihan Keterangan Izin</h2>
-            <div class="izin-options">
-                <button class="izin-btn" onclick="startIzinTimer('Toilet')"><i class="fa-solid fa-toilet"></i> Toilet</button>
-                <button class="izin-btn" onclick="startIzinTimer('Beli Makan')"><i class="fa-solid fa-utensils"></i> Beli Makan</button>
-                <button class="izin-btn" onclick="startIzinTimer('Merokok')"><i class="fa-solid fa-smoking"></i> Merokok</button>
+
+    <div id="absenModal" class="modal">
+
+        <div class="glass" style="padding: 30px; text-align: center; width: 400px;">
+
+            <h2 style="margin-bottom: 20px; color: var(--accent);">Form Absen Hadir</h2>
+
+            <div style="text-align: left; margin-bottom: 10px;">
+
+                <label style="font-size: 11px;">Divisi:</label>
+
+                <select id="selDivisi" class="input-box" style="width: 100%;">
+
+                    <option value="admin">Admin</option><option value="marketing">Marketing</option>
+
+                    <option value="crm">CRM</option><option value="cs">CS</option><option value="kasir">Kasir</option>
+
+                </select>
+
             </div>
-        </div>
-    </div>
 
-    <div id="modalAbsenMasuk" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('modalAbsenMasuk')">&times;</span>
-            <h2>Pilih Shift Absen Masuk</h2>
-            <div class="shift-options">
-                <button class="shift-btn" onclick="submitShift('Pagi')">Absen Shift Pagi</button>
-                <button class="shift-btn" onclick="submitShift('Siang')">Absen Shift Siang</button>
-                <button class="shift-btn" onclick="submitShift('Malam')">Absen Shift Malam</button>
+            <div style="text-align: left; margin-bottom: 20px;">
+
+                <label style="font-size: 11px;">Shift:</label>
+
+                <select id="selShift" class="input-box" style="width: 100%;">
+
+                    <option value="pagi">Pagi</option><option value="siang">Siang</option><option value="malam">Malam</option>
+
+                </select>
+
             </div>
+
+            <button class="btn btn-accent" style="width: 100%;" onclick="submitAbsenHadir()">KONFIRMASI</button>
+
+            <button class="btn" style="width: 100%; margin-top: 10px; background: none;" onclick="closeAbsenModal()">Batal</button>
+
         </div>
+
     </div>
 
-    <div id="modalAbsenPulang" class="modal">
-        <div class="modal-content pulang-modal-content">
-            <span class="close-btn" onclick="closeModal('modalAbsenPulang')">&times;</span>
-            <h2>Absen Pulang</h2>
-            <p class="pulang-message">
-                Terima kasih atas kerja keras Anda hari ini! <br>
-                <strong>Istirahatlah yang cukup, dan sampai jumpa esok hari!</strong>
-            </p>
-            <button class="pulang-btn" onclick="confirmAbsenPulang()">Ya, Absen Pulang</button>
-        </div>
-    </div>
+
 
     <script>
-        // Global variable for the timer interval
-        let timerInterval = null;
-        let captchaCode = '';
-        let currentIzinType = null;
-        let izinTimerSeconds = 0;
-        let timerWarningShown = false;
 
-        // --- Modal controls ---
-        function openModal(id) {
-            document.getElementById(id).style.display = "flex";
-            setTimeout(() => {
-                document.getElementById(id).classList.add('open');
-            }, 10);
+        let dbUsers = JSON.parse(localStorage.getItem('hr_final_users')) || [{ nama: "Super Admin", user: "admin", sandi: "admin123", role: "admin" }];
 
-            if (id === 'modalDaftar') {
-                generateCaptcha();
-            }
-        }
+        let dbLogs = JSON.parse(localStorage.getItem('hr_final_logs')) || [];
 
-        function closeModal(id) {
-            const modal = document.getElementById(id);
-            modal.classList.remove('open');
-            setTimeout(() => {
-                modal.style.display = "none";
-            }, 400);
-            
-            // Reset messages and forms on close
-            if(id === "modalDaftar") {
-                document.getElementById("formDaftar").reset();
-                document.getElementById("daftarMessage").textContent = "";
-            }
-        }
+        let dbHistory = JSON.parse(localStorage.getItem('hr_final_history')) || [];
 
-        // Tutup modal jika klik di luar konten modal
-        window.onclick = function(event) {
-            const modalDaftar = document.getElementById("modalDaftar");
-            const modalLupa = document.getElementById("modalLupa");
-            const modalEdit = document.getElementById("modalEditUser");
-            const modalIzin = document.getElementById("modalPilihanIzin");
-            const modalAbsen = document.getElementById("modalAbsenMasuk");
-            const modalPulang = document.getElementById("modalAbsenPulang");
-            if (event.target === modalDaftar) {
-                closeModal('modalDaftar');
-            }
-            if (event.target === modalLupa) {
-                closeModal('modalLupa');
-            }
-            if (event.target === modalEdit) {
-                closeModal('modalEditUser');
-            }
-            if (event.target === modalIzin) {
-                closeModal('modalPilihanIzin');
-            }
-            if (event.target === modalAbsen) {
-                closeModal('modalAbsenMasuk');
-            }
-            if (event.target === modalPulang) {
-                closeModal('modalAbsenPulang');
-            }
+        let allowedIPs = JSON.parse(localStorage.getItem('hr_allowed_ips')) || ["103.11.0.1", "127.0.0.1"];
+
+        let ipSecurityActive = localStorage.getItem('hr_ip_security') === 'true';
+
+
+
+        let defaultTimeSet = {
+
+            admin: "08:00", marketing: "08:00", crm: "08:00", cs: "08:00", kasir: "08:00",
+
+            toilet: "15", beli_makan: "20", rokok_ibadah: "15", istirahat_siang: "60", istirahat_sore: "30",
+
+            shift_pagi: "07:00", shift_siang: "14:00", shift_malam: "22:00",
+
+            pulang_pagi: "15:00", pulang_siang: "22:00", pulang_malam: "06:00"
+
         };
 
-        // --- Login & Register ---
-        window.onload = function () {
-            const isLoggedIn = localStorage.getItem("isLoggedIn");
-            if (isLoggedIn === "true") {
-                document.getElementById("loginPage").style.display = "none";
-                document.getElementById("menuPage").style.display = "flex";
-                checkUserRoleAndDisplayMenu();
-                showPage("aktivitasBaru");
-            }
-        };
+        let dbSettings = JSON.parse(localStorage.getItem('hr_final_settings')) || defaultTimeSet;
 
-        function checkUserRoleAndDisplayMenu() {
-            const currentUser = localStorage.getItem("currentUser");
-            const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-            const user = users.find(u => u.username === currentUser);
-            
-            const menuDataUser = document.getElementById("menuDataUser");
-            if (menuDataUser) {
-                 if (user && user.role === "Admin") {
-                    menuDataUser.style.display = "list-item";
-                } else {
-                    menuDataUser.style.display = "none";
-                }
-            }
-           
-        }
+
+
+        let currentUser = null;
+
+        let userIP = "103.11." + Math.floor(Math.random()*255) + ".1";
+
+        let tInterval, tSec = 0, tLimit = 0, tAct = "";
+
+
+
+        document.getElementById('ipIndicator').innerText = "Your IP: " + userIP;
+
+
 
         function handleLogin(e) {
+
             e.preventDefault();
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
 
-            let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-            const adminUser = {username: "admin", password: "12345", role: "Admin", nama: "Admin", divisi: "Admin", email: "admin@example.com", shift: ""};
-            
-            if (!users.find(u => u.username === "admin")) {
-                users.unshift(adminUser);
-                localStorage.setItem("userAccounts", JSON.stringify(users));
-            }
+            if(ipSecurityActive && !allowedIPs.includes(userIP)) return alert("IP Tidak Terdaftar!");
 
-            let userFound = users.find(u => u.username === username && u.password === password);
+            const u = document.getElementById('uIn').value, p = document.getElementById('pIn').value;
 
-            if (userFound) {
-                localStorage.setItem("isLoggedIn", "true");
-                localStorage.setItem("currentUser", userFound.username);
-                localStorage.setItem("currentUserName", userFound.nama);
+            const found = dbUsers.find(x => x.user === u && x.sandi === p);
 
-                document.getElementById("loginPage").style.display = "none";
-                document.getElementById("menuPage").style.display = "flex";
+            if(found) {
 
-                checkUserRoleAndDisplayMenu();
+                currentUser = found;
 
-                const logs = JSON.parse(localStorage.getItem("loginLogs") || "[]");
-                const now = new Date();
-                const waktu = now.toLocaleString('id-ID');
-                const agent = /Mobi/i.test(navigator.userAgent) ? "Mobile Browser" : "Desktop Browser";
-                const ip = "192.168.1." + Math.floor(Math.random() * 100 + 1);
-                logs.push({ nama: userFound.nama, waktu, agent, ip });
-                localStorage.setItem("loginLogs", JSON.stringify(logs));
+                dbLogs.unshift({ nama: found.nama, role: found.role, ip: userIP, time: new Date().toLocaleString() });
 
-                showPage('aktivitasBaru');
-            } else {
-                alert("Login gagal! Username atau password salah.");
-            }
-        }
-        
-        function generateCaptcha() {
-            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let captcha = '';
-            for (let i = 0; i < 6; i++) {
-                captcha += characters.charAt(Math.floor(Math.random() * characters.length));
-            }
-            captchaCode = captcha;
-            document.getElementById('captchaText').textContent = captchaCode;
-        }
+                localStorage.setItem('hr_final_logs', JSON.stringify(dbLogs));
 
-        function handleDaftar(e) {
-            e.preventDefault();
-            const username = document.getElementById('daftarUsername').value.trim();
-            const divisi = document.getElementById('daftarDivisi').value.trim();
-            const email = document.getElementById('daftarEmail').value.trim();
-            const captchaInput = document.getElementById('captchaInput').value;
-            const daftarMessage = document.getElementById('daftarMessage');
+                document.getElementById('loginPage').style.display = 'none';
 
-            if (captchaInput !== captchaCode) {
-                daftarMessage.textContent = 'Kode CAPTCHA salah!';
-                daftarMessage.style.color = 'var(--danger-color)';
-                generateCaptcha();
-                return;
-            }
+                document.getElementById('mainSystem').style.display = 'flex';
 
-            let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-            const existingUser = users.find(u => u.username === username);
-            const existingEmail = users.find(u => u.email === email);
+                document.getElementById('userName').innerText = found.nama;
 
-            if (existingUser) {
-                daftarMessage.textContent = 'Username sudah terdaftar.';
-                daftarMessage.style.color = 'var(--danger-color)';
-                return;
-            }
-            
-            if (existingEmail) {
-                daftarMessage.textContent = 'Email sudah terdaftar.';
-                daftarMessage.style.color = 'var(--danger-color)';
-                return;
-            }
+                document.getElementById('userRole').innerText = found.role;
 
-            // Generate a default password. User can change it later.
-            const defaultPassword = "password123";
+                const isAdmin = found.role === 'admin';
 
-            const newUser = {
-                nama: username, // Menggunakan username sebagai nama lengkap
-                username: username,
-                divisi: divisi,
-                email: email,
-                password: defaultPassword, // Default password
-                role: 'User',
-                shift: ''
-            };
-            
-            users.push(newUser);
-            localStorage.setItem("userAccounts", JSON.stringify(users));
+                ['nav-karyawan', 'nav-logs', 'nav-setting-jadwal'].forEach(id => {
 
-            daftarMessage.innerHTML = `Pendaftaran berhasil! Akun Anda telah dibuat dengan username **${username}** dan password sementara **${defaultPassword}**. Silakan login dan ubah password Anda.`;
-            daftarMessage.style.color = 'var(--success-color)';
-            
-            document.getElementById("formDaftar").reset();
-            generateCaptcha();
-        }
+                    document.getElementById(id).style.display = isAdmin ? 'flex' : 'none';
 
-        function logout() {
-            localStorage.setItem("isLoggedIn", "false");
-            localStorage.removeItem("currentUser");
-            localStorage.removeItem("currentUserName");
-            location.reload();
-        }
-
-        // --- Navigation ---
-        function showPage(pageName) {
-            const contentArea = document.getElementById('contentArea');
-            contentArea.innerHTML = '';
-            
-            switch (pageName) {
-                case 'tambahPemain':
-                    if (localStorage.getItem("currentUser") === "admin") {
-                        generateUserTable();
-                    } else {
-                        contentArea.innerHTML = `
-                            <div class="floating-box" style="text-align:center;">
-                                <h1>Akses Ditolak</h1>
-                                <p>Anda tidak memiliki izin untuk melihat halaman ini.</p>
-                            </div>
-                        `;
-                    }
-                    break;
-                case 'riwayatLogin':
-                    generateLoginHistory();
-                    break;
-                case 'aktivitasBaru':
-                    generateAktivitasPage();
-                    break;
-                case 'historyAktivitas':
-                    generateHistoryAktivitas();
-                    break;
-            }
-        }
-
-        // --- Dynamic Content Generation ---
-        function generateUserTable() {
-            const contentArea = document.getElementById('contentArea');
-            let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-
-            let tableHTML = `
-                <div class="content-header">
-                    <h1>Data User</h1>
-                </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Username</th>
-                            <th>Nama Lengkap</th>
-                            <th>Divisi</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Shift</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-
-            users.forEach(user => {
-                tableHTML += `
-                    <tr>
-                        <td>${user.username}</td>
-                        <td>${user.nama}</td>
-                        <td>${user.divisi}</td>
-                        <td>${user.email}</td>
-                        <td>${user.role}</td>
-                        <td>${user.shift}</td>
-                        <td>
-                            <button class="edit-btn" onclick="editUser('${user.username}')">Edit</button>
-                            <button class="delete-btn" onclick="deleteUser('${user.username}')">Hapus</button>
-                        </td>
-                    </tr>
-                `;
-            });
-
-            tableHTML += `
-                    </tbody>
-                </table>
-            `;
-            contentArea.innerHTML = tableHTML;
-        }
-
-        function generateLoginHistory() {
-            const contentArea = document.getElementById('contentArea');
-            const logs = JSON.parse(localStorage.getItem("loginLogs") || "[]");
-
-            let tableHTML = `
-                <div class="content-header">
-                    <h1>Riwayat Login</h1>
-                </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nama</th>
-                            <th>Waktu Login</th>
-                            <th>Perangkat</th>
-                            <th>IP Address</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-
-            logs.reverse().forEach(log => {
-                tableHTML += `
-                    <tr>
-                        <td>${log.nama}</td>
-                        <td>${log.waktu}</td>
-                        <td>${log.agent}</td>
-                        <td>${log.ip}</td>
-                    </tr>
-                `;
-            });
-
-            tableHTML += `
-                    </tbody>
-                </table>
-            `;
-            contentArea.innerHTML = tableHTML;
-        }
-
-        function generateAktivitasPage() {
-            const contentArea = document.getElementById('contentArea');
-            const currentUser = localStorage.getItem("currentUser");
-            const currentUserName = localStorage.getItem("currentUserName");
-            const userActivities = JSON.parse(localStorage.getItem("userActivities") || "{}");
-            const today = new Date().toDateString();
-            const hasAbsenMasuk = userActivities[currentUser] && userActivities[currentUser][today] && userActivities[currentUser][today].absenMasuk;
-
-            contentArea.innerHTML = `
-                <div class="content-header">
-                    <h1>Selamat Datang, ${currentUserName}!</h1>
-                </div>
-                <div id="welcomeMessage">
-                    Absen Masuk untuk hari ini adalah <strong>WAJIB</strong>. Silakan pilih shift Anda.
-                </div>
-                <div class="aktivitas-container">
-                    <div class="aktivitas-card" id="absenMasukCard">
-                        <i class="fa-solid fa-clock icon"></i>
-                        <h3>Absen Masuk</h3>
-                    </div>
-                    <div class="aktivitas-card izin" id="izinCard">
-                        <i class="fa-solid fa-person-walking-arrow-right icon"></i>
-                        <h3>Izin</h3>
-                    </div>
-                    <div class="aktivitas-card pulang" id="absenPulangCard">
-                        <i class="fa-solid fa-door-closed icon"></i>
-                        <h3>Absen Pulang</h3>
-                    </div>
-                </div>
-                <div id="izinTimerContainer"></div>
-            `;
-            
-            // Event listeners for activity cards
-            document.getElementById('absenMasukCard').addEventListener('click', () => {
-                if (!hasAbsenMasuk) {
-                    openModal('modalAbsenMasuk');
-                } else {
-                    alert('Anda sudah absen masuk hari ini.');
-                }
-            });
-            document.getElementById('izinCard').addEventListener('click', () => {
-                if (hasAbsenMasuk) {
-                    openModal('modalPilihanIzin');
-                } else {
-                    alert('Silakan absen masuk terlebih dahulu.');
-                }
-            });
-            document.getElementById('absenPulangCard').addEventListener('click', () => {
-                 if (hasAbsenMasuk) {
-                    openModal('modalAbsenPulang');
-                } else {
-                    alert('Silakan absen masuk terlebih dahulu.');
-                }
-            });
-        }
-        
-        // Fungsi generateHistoryAktivitas yang telah diperbarui
-        function generateHistoryAktivitas() {
-            const contentArea = document.getElementById('contentArea');
-            const currentUser = localStorage.getItem("currentUser");
-            const userActivities = JSON.parse(localStorage.getItem("userActivities") || "{}");
-            const today = new Date().toDateString();
-            
-            let historyHTML = `
-                <div class="content-header">
-                    <h1>History Aktivitas</h1>
-                </div>
-                <div class="floating-box">
-                    <h2>Riwayat Aktivitas Anda</h2>
-                    <p>Waktu Izin Hari Ini: <strong id="totalIzinTime">00:00:00</strong></p>
-                </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nama</th>
-                            <th>Tanggal</th>
-                            <th>Aktivitas</th>
-                            <th>Keterangan</th>
-                            <th>Waktu</th>
-                        </tr>
-                    </thead>
-                    <tbody id="historyTableBody">
-                    </tbody>
-                </table>
-            `;
-            contentArea.innerHTML = historyHTML;
-
-            const activitiesForUser = userActivities[currentUser] || {};
-            const historyTableBody = document.getElementById('historyTableBody');
-            
-            let izinTimeToday = 0;
-            const todayActivities = activitiesForUser[today] || {};
-
-            if (todayActivities.izin) {
-                todayActivities.izin.forEach(izin => {
-                    izinTimeToday += parseDurationToSeconds(izin.durasi);
                 });
-            }
-            
-            document.getElementById('totalIzinTime').textContent = formatTime(izinTimeToday);
-            
-            // Generate full history table
-            for (const date in activitiesForUser) {
-                const activities = activitiesForUser[date];
-                if (activities.absenMasuk) {
-                    const absensiMasukRow = `
-                        <tr>
-                            <th>Nama</th>
-                            <td>${date}</td>
-                            <td>Absen Masuk</td>
-                            <td>Shift ${activities.absenMasuk.shift}</td>
-                            <td>${activities.absenMasuk.waktu}</td>
-                        </tr>
-                    `;
-                    historyTableBody.innerHTML += absensiMasukRow;
-                }
-                
-                if (activities.izin) {
-                    activities.izin.forEach(izin => {
-                        const izinRow = `
-                            <tr>
-                                <th>Nama</th>
-                                <td>${date}</td>
-                                <td>Izin</td>
-                                <td>${izin.keterangan} (${izin.durasi})</td>
-                                <td>${izin.waktuMulai}</td>
-                            </tr>
-                        `;
-                        historyTableBody.innerHTML += izinRow;
-                    });
-                }
-                
-                if (activities.absenPulang) {
-                     const absensiPulangRow = `
-                        <tr>
-                            <th>Nama</th>
-                            <td>${date}</td>
-                            <td>Absen Pulang</td>
-                            <td>-</td>
-                            <td>${activities.absenPulang.waktu}</td>
-                        </tr>
-                    `;
-                    historyTableBody.innerHTML += absensiPulangRow;
-                }
-            }
+
+                showPage('dashboard');
+
+            } else { alert("Login Gagal!"); }
+
         }
 
-        // --- CRUD Operations for Users (Admin Only) ---
-        function editUser(usernameToEdit) {
-            const users = JSON.parse(localStorage.getItem("userAccounts"));
-            const user = users.find(u => u.username === usernameToEdit);
-            if (!user) return;
 
-            document.getElementById('editOriginalUsername').value = user.username;
-            document.getElementById('editRole').value = user.role;
-            document.getElementById('editShift').value = user.shift;
-            document.getElementById('editUsername').value = user.username;
-            document.getElementById('editPassword').value = user.password;
-            document.getElementById('editDivisi').value = user.divisi;
-            document.getElementById('editEmail').value = user.email;
 
-            openModal('modalEditUser');
+        function showPage(page) {
+
+            const view = document.getElementById('mainView');
+
+            document.querySelectorAll('.sidebar li').forEach(l => l.classList.remove('active'));
+
+            if(document.getElementById('nav-'+page)) document.getElementById('nav-'+page).classList.add('active');
+
+
+
+            if(page === 'dashboard') {
+
+                const isAbsen = localStorage.getItem('status_absen_' + currentUser.user) === 'true';
+
+               
+
+                // Logic Filter Pelanggaran Hari Ini
+
+                const todayISO = new Date().toISOString().split('T')[0];
+
+                const violations = dbHistory.filter(h =>
+
+                    h.isoDate === todayISO &&
+
+                    (h.status.includes('Melebihi') || h.status.includes('Terlambat'))
+
+                );
+
+
+
+                view.innerHTML = `
+
+                    <h1>Dashboard</h1>
+
+                    <div class="grid">
+
+                        <div class="glass card-action ${isAbsen ? 'locked' : ''}" onclick="${isAbsen ? '' : 'openAbsenModal()'}">
+
+                            <i class="fa fa-fingerprint"></i><h3>Absen Hadir</h3>${isAbsen ? '<small style="color:var(--success)">HADIR</small>' : '<small>Masuk</small>'}
+
+                        </div>
+
+                        <div class="glass card-action" onclick="handlePulang()"><i class="fa fa-door-open"></i><h3>Absen Pulang</h3><small>Selesai</small></div>
+
+                    </div>
+
+                   
+
+                    <div class="section-title"><i class="fa fa-clock-rotate-left"></i> Izin Karyawan</div>
+
+                    <div class="grid">
+
+                        <div class="glass card-action" onclick="startIzin('Toilet', dbSettings.toilet)"><i class="fa fa-restroom"></i><h3>Toilet</h3><small>${dbSettings.toilet}m</small></div>
+
+                        <div class="glass card-action" onclick="startIzin('Beli Makan', dbSettings.beli_makan)"><i class="fa fa-utensils"></i><h3>Beli Makan</h3><small>${dbSettings.beli_makan}m</small></div>
+
+                        <div class="glass card-action" onclick="startIzin('Merokok/Ibadah', dbSettings.rokok_ibadah)"><i class="fa fa-person-praying"></i><h3>Merokok</h3><small>${dbSettings.rokok_ibadah}m</small></div>
+
+                        <div class="glass card-action" onclick="startIzin('Istirahat Siang', dbSettings.istirahat_siang)"><i class="fa fa-sun"></i><h3>Istrht Siang</h3><small>${dbSettings.istirahat_siang}m</small></div>
+
+                        <div class="glass card-action" onclick="startIzin('Istirahat Sore', dbSettings.istirahat_sore)"><i class="fa fa-cloud-sun"></i><h3>Istrht Sore</h3><small>${dbSettings.istirahat_sore}m</small></div>
+
+                    </div>
+
+
+
+                    <div class="section-title"><i class="fa fa-exclamation-triangle" style="color:var(--danger)"></i> Info Pelanggaran Hari Ini</div>
+
+                    <div class="glass" style="padding:20px; margin-top:10px; min-height:150px;">
+
+                        <table style="margin-top:0;">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Nama Karyawan</th>
+
+                                    <th>Jenis Pelanggaran</th>
+
+                                    <th>Status Pelanggaran</th>
+
+                                    <th>Waktu</th>
+
+                                    <th>Durasi/Kelebihan</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                ${violations.length > 0 ? violations.map(v => `
+
+                                    <tr>
+
+                                        <td>${v.nama}</td>
+
+                                        <td>${v.kategori}</td>
+
+                                        <td><span class="badge bg-danger">${v.status}</span></td>
+
+                                        <td>${v.waktu}</td>
+
+                                        <td>${v.durasi}</td>
+
+                                    </tr>
+
+                                `).join('') : '<tr><td colspan="5" style="text-align:center; opacity:0.5;">Tidak ada pelanggaran hari ini.</td></tr>'}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                `;
+
+            }
+
+            else if(page === 'history') { renderHistoryPage(); }
+
+            else if(page === 'setting-jadwal') {
+
+                view.innerHTML = `<h1>Setting Jadwal</h1><div class="glass" style="padding:20px; margin-top:20px;">
+
+                    <div class="section-title">1. Jam Masuk Divisi</div>
+
+                    ${['admin','marketing','crm','cs','kasir'].map(d=>`<div class="setting-card glass"><label>${d.toUpperCase()}</label><div style="display:flex;gap:5px"><input type="time" id="s_${d}" class="input-box" value="${dbSettings[d]}"><button class="btn btn-accent" onclick="saveS('${d}')">SAVE</button></div></div>`).join('')}
+
+                    <div class="section-title">2. Durasi Izin (Menit)</div>
+
+                    ${['toilet','beli_makan','rokok_ibadah','istirahat_siang','istirahat_sore'].map(i=>`<div class="setting-card glass"><label>${i.replace('_',' ').toUpperCase()}</label><div style="display:flex;gap:5px"><input type="number" id="s_${i}" class="input-box" value="${dbSettings[i]}"><button class="btn btn-accent" onclick="saveS('${i}')">SAVE</button></div></div>`).join('')}
+
+                    <div class="section-title">3. Jam Masuk Shift</div>
+
+                    ${['pagi','siang','malam'].map(s=>`<div class="setting-card glass"><label>MASUK ${s.toUpperCase()}</label><div style="display:flex;gap:5px"><input type="time" id="s_shift_${s}" class="input-box" value="${dbSettings['shift_'+s]}"><button class="btn btn-accent" onclick="saveS('shift_${s}')">SAVE</button></div></div>`).join('')}
+
+                    <div class="section-title">4. Jam Pulang Shift</div>
+
+                    ${['pagi','siang','malam'].map(s=>`<div class="setting-card glass"><label>PULANG ${s.toUpperCase()}</label><div style="display:flex;gap:5px"><input type="time" id="s_pulang_${s}" class="input-box" value="${dbSettings['pulang_'+s]}"><button class="btn btn-accent" onclick="saveS('pulang_'+s)')">SAVE</button></div></div>`).join('')}
+
+                </div>`;
+
+            }
+
+            else if(page === 'karyawan') {
+
+                let rows = dbUsers.map((k, i) => `<tr><td>${k.nama}</td><td>${k.user}</td><td>••••••</td><td>${k.role}</td><td><button class="btn-warning" style="padding:5px 10px; border-radius:5px; margin-right:5px; font-size:10px;" onclick="openEditModal(${i})"><i class="fa fa-edit"></i> Edit</button><button class="btn-danger" style="padding:5px 10px; border-radius:5px; font-size:10px;" onclick="delK(${i})"><i class="fa fa-trash"></i> Hapus</button></td></tr>`).join('');
+
+                view.innerHTML = `<h1>Manajemen Karyawan</h1><div class="glass" style="padding:20px; margin-top:20px; display:flex; gap:10px;"><input id="nk" class="input-box" placeholder="Nama"><input id="uk" class="input-box" placeholder="User ID"><input id="sk" class="input-box" placeholder="Sandi"><select id="rk" class="input-box"><option value="karyawan">Karyawan</option><option value="admin">Admin</option></select><button class="btn btn-accent" onclick="addK()">ADD</button></div><div class="glass" style="margin-top:20px; padding:20px;"><table><thead><tr><th>Nama</th><th>User</th><th>Sandi</th><th>Role</th><th>Aksi</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+
+            }
+
+            else if(page === 'logs') {
+
+                view.innerHTML = `<h1>Log & Security</h1><div class="glass" style="padding:20px; margin-top:20px; border:1px solid var(--accent)"><h3>Whitelist IP</h3><div style="display:flex; gap:10px; margin:15px 0;"><input id="newIP" class="input-box" style="flex:1" placeholder="IP Address"><button class="btn btn-accent" onclick="addIP()">DAFTAR</button><button class="btn ${ipSecurityActive?'btn-danger':'btn-accent'}" onclick="toggleIPSec()">${ipSecurityActive?'OFF':'ON'}</button></div><div style="display:flex; flex-wrap:wrap; gap:5px">${allowedIPs.map((ip, i)=>`<span class="badge bg-success">${ip} <i class="fa fa-times" onclick="delIP(${i})"></i></span>`).join('')}</div></div><div class="glass" style="margin-top:20px; padding:20px;"><table><thead><tr><th>Nama</th><th>IP</th><th>Waktu</th></tr></thead><tbody>${dbLogs.map(l=>`<tr><td>${l.nama}</td><td>${l.ip}</td><td>${l.time}</td></tr>`).join('')}</tbody></table></div>`;
+
+            }
+
         }
 
-        function submitEditUser(e) {
-            e.preventDefault();
-            const originalUsername = document.getElementById('editOriginalUsername').value;
-            const newRole = document.getElementById('editRole').value;
-            const newShift = document.getElementById('editShift').value;
-            const newUsername = document.getElementById('editUsername').value;
-            const newPassword = document.getElementById('editPassword').value;
-            const newDivisi = document.getElementById('editDivisi').value;
-            const newEmail = document.getElementById('editEmail').value;
-            const editMessage = document.getElementById('editMessage');
 
-            let users = JSON.parse(localStorage.getItem("userAccounts"));
-            const userIndex = users.findIndex(u => u.username === originalUsername);
-            if (userIndex === -1) {
-                editMessage.textContent = "User tidak ditemukan.";
-                editMessage.style.color = 'var(--danger-color)';
-                return;
-            }
 
-            // Check for duplicate username/email if they are changed
-            if (newUsername !== originalUsername && users.find(u => u.username === newUsername)) {
-                 editMessage.textContent = 'Username sudah ada.';
-                 editMessage.style.color = 'var(--danger-color)';
-                 return;
-            }
-            if (newEmail !== users[userIndex].email && users.find(u => u.email === newEmail)) {
-                 editMessage.textContent = 'Email sudah ada.';
-                 editMessage.style.color = 'var(--danger-color)';
-                 return;
-            }
+        // --- HISTORY RENDER ---
 
-            users[userIndex].role = newRole;
-            users[userIndex].shift = newShift;
-            users[userIndex].username = newUsername;
-            users[userIndex].password = newPassword;
-            users[userIndex].divisi = newDivisi;
-            users[userIndex].email = newEmail;
-            
-            localStorage.setItem("userAccounts", JSON.stringify(users));
-            editMessage.textContent = "Data user berhasil diupdate!";
-            editMessage.style.color = 'var(--success-color)';
-            
-            // Reload user table to show changes
-            setTimeout(() => {
-                closeModal('modalEditUser');
-                showPage('tambahPemain');
+        function renderHistoryPage(filterData = null) {
+
+            const view = document.getElementById('mainView');
+
+            const dataToRender = filterData || dbHistory;
+
+            view.innerHTML = `<h1>History Aktivitas</h1><div class="glass" style="padding:20px; margin-top:20px;"><div class="filter-container"><div class="filter-group"><label>Kategori</label><select id="fCat" class="input-box"><option value="semua">Semua</option><option value="Absen Hadir">Absen Hadir</option><option value="Absen Pulang">Absen Pulang</option><option value="Izin">Izin</option></select></div><div class="filter-group"><label>Karyawan</label><input type="text" id="fUser" class="input-box" placeholder="Nama..."></div><div class="filter-group"><label>Tgl Awal</label><input type="date" id="fStart" class="input-box"></div><div class="filter-group"><label>Tgl Akhir</label><input type="date" id="fEnd" class="input-box"></div><button class="btn btn-accent" onclick="applyHistoryFilter()">CARI</button></div><table><thead><tr><th>Karyawan</th><th>Aksi</th><th>Status</th><th>Waktu</th><th>Durasi</th></tr></thead><tbody>${dataToRender.map(h => `<tr><td>${h.nama}</td><td>${h.kategori}</td><td><span class="badge ${h.status.includes('Melebihi')?'bg-danger':'bg-success'}">${h.status}</span></td><td>${h.tgl}<br><small>${h.waktu}</small></td><td>${h.durasi}</td></tr>`).join('')}</tbody></table></div>`;
+
+        }
+
+
+
+        function applyHistoryFilter() {
+
+            const cat = document.getElementById('fCat').value, user = document.getElementById('fUser').value.toLowerCase(), start = document.getElementById('fStart').value, end = document.getElementById('fEnd').value;
+
+            const filtered = dbHistory.filter(h => {
+
+                const matchCat = (cat === 'semua') || (cat === 'Izin' ? h.kategori.includes('Izin') : h.kategori === cat);
+
+                const matchUser = h.nama.toLowerCase().includes(user);
+
+                let matchDate = true;
+
+                if(start) matchDate = matchDate && (h.isoDate >= start);
+
+                if(end) matchDate = matchDate && (h.isoDate <= end);
+
+                return matchCat && matchUser && matchDate;
+
+            });
+
+            renderHistoryPage(filtered);
+
+        }
+
+
+
+        // --- CORE FUNCTIONS ---
+
+        function startIzin(n, m) {
+
+            tSec=0; tLimit=parseInt(m)*60; tAct=n;
+
+            document.getElementById('timerName').innerText="Izin: "+n;
+
+            document.getElementById('timerModal').style.display='flex';
+
+            clearInterval(tInterval);
+
+            tInterval = setInterval(() => {
+
+                tSec++;
+
+                let mm=Math.floor(tSec/60).toString().padStart(2,'0'), ss=(tSec%60).toString().padStart(2,'0');
+
+                document.getElementById('timerDisplay').innerText=`00:${mm}:${ss}`;
+
+                if(tSec > tLimit) document.getElementById('timerDisplay').style.color='var(--danger)';
+
             }, 1000);
+
         }
 
-        function deleteUser(usernameToDelete) {
-            if (usernameToDelete === "admin") {
-                alert("Tidak bisa menghapus akun admin.");
-                return;
-            }
-            if (confirm(`Apakah Anda yakin ingin menghapus user ${usernameToDelete}?`)) {
-                let users = JSON.parse(localStorage.getItem("userAccounts"));
-                users = users.filter(user => user.username !== usernameToDelete);
-                localStorage.setItem("userAccounts", JSON.stringify(users));
-                showPage('tambahPemain'); // Reload user table
-            }
+
+
+        function stopIzin() {
+
+            clearInterval(tInterval);
+
+            let mm = Math.floor(tSec/60), ss = tSec % 60;
+
+            let dur = `${mm}m ${ss}s`;
+
+            let stat = (tSec > tLimit) ? "Melebihi Waktu" : "Tepat Waktu";
+
+            recordHistory(`Izin ${tAct}`, stat, dur);
+
+            document.getElementById('timerModal').style.display='none';
+
+            document.getElementById('timerDisplay').style.color='var(--accent)';
+
+            showPage('dashboard'); // Refresh Dashboard
+
         }
-        
-        // --- Activity and Timer Functions ---
-        function submitShift(shift) {
-            const currentUser = localStorage.getItem("currentUser");
-            const userActivities = JSON.parse(localStorage.getItem("userActivities") || "{}");
-            const today = new Date().toDateString();
+
+
+
+        function recordHistory(kat, stat, dur = "-") {
+
             const now = new Date();
 
-            if (!userActivities[currentUser]) {
-                userActivities[currentUser] = {};
-            }
-            if (!userActivities[currentUser][today]) {
-                 userActivities[currentUser][today] = {};
-            }
+            dbHistory.unshift({
 
-            userActivities[currentUser][today].absenMasuk = {
-                shift: shift,
-                waktu: now.toLocaleString('id-ID')
-            };
+                nama: currentUser.nama, kategori: kat, status: stat, durasi: dur,
 
-            userActivities[currentUser][today].totalWorkTime = "00:00:00"; // Initialize total work time
-            
-            localStorage.setItem("userActivities", JSON.stringify(userActivities));
-            closeModal('modalAbsenMasuk');
-            
-            const welcomeMessage = document.getElementById("welcomeMessage");
-            welcomeMessage.innerHTML = `Anda telah absen untuk **Shift ${shift}**. Selamat bekerja!`;
+                tgl: now.toLocaleDateString('id-ID'), waktu: now.toLocaleTimeString('id-ID'),
+
+                isoDate: now.toISOString().split('T')[0]
+
+            });
+
+            localStorage.setItem('hr_final_history', JSON.stringify(dbHistory));
+
         }
 
-        function startIzinTimer(izinType) {
-            const container = document.getElementById('izinTimerContainer');
-            container.innerHTML = `
-                <div id="timer-container">
-                    <p id="timer-info">Waktu Izin: ${izinType}</p>
-                    <h3 id="timer-display">00:00:00</h3>
-                    <button class="timer-btn stop" onclick="stopIzinTimer()">Selesai Izin</button>
-                    <div id="timer-alert"></div>
-                </div>
-            `;
-            container.classList.add('start-timer');
-            currentIzinType = izinType;
-            izinTimerSeconds = 0;
-            timerWarningShown = false;
-            
-            timerInterval = setInterval(updateIzinTimer, 1000);
-            
-            closeModal('modalPilihanIzin');
-        }
 
-        function updateIzinTimer() {
-            izinTimerSeconds++;
-            const display = document.getElementById('timer-display');
-            const alert = document.getElementById('timer-alert');
-            const container = document.getElementById('timer-container');
 
-            display.textContent = formatTime(izinTimerSeconds);
+        function submitAbsenHadir() {
 
-            // Show warning at 20 minutes
-            if (izinTimerSeconds >= 20 * 60 && !timerWarningShown) {
-                alert.textContent = "Waktu izin Anda sudah 20 menit!";
-                container.classList.add('warning');
-                timerWarningShown = true;
-            }
-        }
+            const div = document.getElementById('selDivisi').value;
 
-        function stopIzinTimer() {
-            clearInterval(timerInterval);
-            
-            const currentUser = localStorage.getItem("currentUser");
-            const userActivities = JSON.parse(localStorage.getItem("userActivities") || "{}");
-            const today = new Date().toDateString();
+            const shift = document.getElementById('selShift').value;
+
             const now = new Date();
 
-            if (userActivities[currentUser] && userActivities[currentUser][today]) {
-                if (!userActivities[currentUser][today].izin) {
-                    userActivities[currentUser][today].izin = [];
-                }
-                userActivities[currentUser][today].izin.push({
-                    keterangan: currentIzinType,
-                    waktuMulai: now.toLocaleString('id-ID'),
-                    durasi: formatTime(izinTimerSeconds)
-                });
-                
-                localStorage.setItem("userActivities", JSON.stringify(userActivities));
+            const currentTime = now.getHours() + ":" + now.getMinutes().toString().padStart(2,'0');
+
+            const limit = dbSettings[div];
+
+           
+
+            let status = (currentTime > limit) ? "Terlambat" : "Tepat Waktu";
+
+            let diff = "-";
+
+           
+
+            if(status === "Terlambat") {
+
+                const [h1, m1] = currentTime.split(':'), [h2, m2] = limit.split(':');
+
+                diff = ((h1*60 + parseInt(m1)) - (h2*60 + parseInt(m2))) + " Menit";
+
             }
-            
-            const container = document.getElementById('izinTimerContainer');
-            container.classList.add('stop-timer');
-            setTimeout(() => {
-                 container.innerHTML = '';
-                 container.classList.remove('start-timer', 'stop-timer');
-            }, 500);
+
+
+
+            localStorage.setItem('status_absen_' + currentUser.user, 'true');
+
+            recordHistory("Absen Hadir", status, diff);
+
+            closeAbsenModal();
+
+            showPage('dashboard');
+
         }
 
-        function confirmAbsenPulang() {
-            const currentUser = localStorage.getItem("currentUser");
-            const userActivities = JSON.parse(localStorage.getItem("userActivities") || "{}");
-            const today = new Date().toDateString();
-            const now = new Date();
 
-            if (userActivities[currentUser] && userActivities[currentUser][today] && userActivities[currentUser][today].absenMasuk) {
-                const absenMasukTime = new Date(userActivities[currentUser][today].absenMasuk.waktu);
-                const timeDiffSeconds = Math.floor((now - absenMasukTime) / 1000);
-                
-                userActivities[currentUser][today].absenPulang = {
-                    waktu: now.toLocaleString('id-ID')
-                };
-                userActivities[currentUser][today].totalWorkTime = formatTime(timeDiffSeconds);
-                
-                localStorage.setItem("userActivities", JSON.stringify(userActivities));
-                closeModal('modalAbsenPulang');
-                showPage('historyAktivitas');
-            } else {
-                alert("Anda belum absen masuk hari ini.");
-                closeModal('modalAbsenPulang');
-            }
-        }
 
-        // --- Helper Functions ---
-        function formatTime(seconds) {
-            const h = String(Math.floor(seconds / 3600)).padStart(2, '0');
-            const m = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
-            const s = String(seconds % 60).padStart(2, '0');
-            return `${h}:${m}:${s}`;
-        }
-        
-        function parseDurationToSeconds(duration) {
-            const parts = duration.split(':').map(Number);
-            return parts[0] * 3600 + parts[1] * 60 + parts[2];
-        }
+        // --- UTILS ---
+
+        function openEditModal(i) { const u = dbUsers[i]; document.getElementById('editIdx').value=i; document.getElementById('en').value=u.nama; document.getElementById('eu').value=u.user; document.getElementById('es').value=u.sandi; document.getElementById('er').value=u.role; document.getElementById('editModal').style.display='flex'; }
+
+        function closeEditModal() { document.getElementById('editModal').style.display='none'; }
+
+        function saveEdit() { const i=document.getElementById('editIdx').value; dbUsers[i].nama=document.getElementById('en').value; dbUsers[i].user=document.getElementById('eu').value; dbUsers[i].sandi=document.getElementById('es').value; dbUsers[i].role=document.getElementById('er').value; localStorage.setItem('hr_final_users', JSON.stringify(dbUsers)); closeEditModal(); showPage('karyawan'); }
+
+        function saveS(k) { dbSettings[k]=document.getElementById('s_'+k).value; localStorage.setItem('hr_final_settings', JSON.stringify(dbSettings)); alert("Saved!"); }
+
+        function addK() { const n=document.getElementById('nk').value, u=document.getElementById('uk').value, s=document.getElementById('sk').value, r=document.getElementById('rk').value; if(n&&u&&s){ dbUsers.push({nama:n, user:u, sandi:s, role:r}); localStorage.setItem('hr_final_users', JSON.stringify(dbUsers)); showPage('karyawan'); } }
+
+        function delK(i) { if(confirm("Hapus?")){ dbUsers.splice(i,1); localStorage.setItem('hr_final_users', JSON.stringify(dbUsers)); showPage('karyawan'); } }
+
+        function addIP() { const ip=document.getElementById('newIP').value; if(ip){ allowedIPs.push(ip); localStorage.setItem('hr_allowed_ips', JSON.stringify(allowedIPs)); showPage('logs'); } }
+
+        function delIP(i) { allowedIPs.splice(i,1); localStorage.setItem('hr_allowed_ips', JSON.stringify(allowedIPs)); showPage('logs'); }
+
+        function toggleIPSec() { ipSecurityActive=!ipSecurityActive; localStorage.setItem('hr_ip_security', ipSecurityActive); showPage('logs'); }
+
+        function openAbsenModal() { document.getElementById('absenModal').style.display='flex'; }
+
+        function closeAbsenModal() { document.getElementById('absenModal').style.display='none'; }
+
+        function handlePulang() { if(localStorage.getItem('status_absen_' + currentUser.user) !== 'true') return alert("Belum Absen!"); recordHistory("Absen Pulang", "Tepat Waktu"); localStorage.removeItem('status_absen_' + currentUser.user); showPage('dashboard'); }
 
     </script>
+
 </body>
 
 </html>
