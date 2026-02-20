@@ -141,25 +141,55 @@
     </div>
 
     <script>
-        let dbUsers = JSON.parse(localStorage.getItem('hr_final_users')) || [{ nama: "Super Admin", user: "admin", sandi: "admin123", role: "admin" }];
-        let dbLogs = JSON.parse(localStorage.getItem('hr_final_logs')) || [];
-        let dbHistory = JSON.parse(localStorage.getItem('hr_final_history')) || [];
-        let allowedIPs = JSON.parse(localStorage.getItem('hr_allowed_ips')) || ["127.0.0.1"];
-        let ipSecurityActive = localStorage.getItem('hr_ip_security') === 'true';
+        // --- CONFIGURATION ---
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyD7icBWat6tNIrNkfyWM4UdD8nAT-_N_wGAIWvtUQW_2yXCgA4_ym6z3U4Fzgjtz6K/exec";
 
-        let defaultTimeSet = {
+        // --- DATABASE LOCAL SYNC ---
+        let dbUsers = [];
+        let dbLogs = [];
+        let dbHistory = [];
+        let dbSettings = JSON.parse(localStorage.getItem('hr_final_settings')) || {
             admin: "08:00", marketing: "08:00", crm: "08:00", cs: "08:00", kasir: "08:00",
             toilet: "15", beli_makan: "20", rokok_ibadah: "15", istirahat_siang: "60", istirahat_sore: "30",
             shift_pagi: "07:00", shift_siang: "14:00", shift_malam: "22:00",
             pulang_pagi: "15:00", pulang_siang: "22:00", pulang_malam: "06:00"
         };
-        let dbSettings = JSON.parse(localStorage.getItem('hr_final_settings')) || defaultTimeSet;
+        let allowedIPs = JSON.parse(localStorage.getItem('hr_allowed_ips')) || ["127.0.0.1"];
+        let ipSecurityActive = localStorage.getItem('hr_ip_security') === 'true';
 
         let currentUser = null;
         let userIP = "Detecting..."; 
         let tInterval, tSec = 0, tLimit = 0, tAct = "";
 
-        // Fungsi Deteksi IP Publik (Statis/Asli)
+        // --- GOOGLE SHEETS INTEGRATION ---
+        async function syncToSheets(action, sheetName, dataRow = null) {
+            try {
+                const payload = { action: action, sheet: sheetName };
+                if (dataRow) payload.values = dataRow;
+                
+                const response = await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                return await response.json();
+            } catch (e) { console.error("Sync Error", e); }
+        }
+
+        async function loadAllData() {
+            try {
+                const u = await syncToSheets('read', 'users');
+                if (u && u.length > 0) dbUsers = u;
+                else dbUsers = [{ nama: "Super Admin", user: "admin", sandi: "admin123", role: "admin" }];
+
+                const h = await syncToSheets('read', 'history');
+                if (h) dbHistory = h;
+
+                const l = await syncToSheets('read', 'logs');
+                if (l) dbLogs = l;
+            } catch (e) { console.log("First time setup or offline."); }
+        }
+
+        // --- CORE FUNCTIONS (DIPERTAHANKAN) ---
         async function getIP() {
             try {
                 const response = await fetch('https://api.ipify.org?format=json');
@@ -172,8 +202,9 @@
             }
         }
         getIP();
+        loadAllData();
 
-        function handleLogin(e) {
+        async function handleLogin(e) {
             e.preventDefault();
             if(ipSecurityActive && !allowedIPs.includes(userIP)) return alert("Akses Ditolak! IP " + userIP + " Tidak Terdaftar.");
             
@@ -181,8 +212,10 @@
             const found = dbUsers.find(x => x.user === u && x.sandi === p);
             if(found) {
                 currentUser = found;
-                dbLogs.unshift({ nama: found.nama, role: found.role, ip: userIP, time: new Date().toLocaleString() });
-                localStorage.setItem('hr_final_logs', JSON.stringify(dbLogs));
+                const logTime = new Date().toLocaleString();
+                dbLogs.unshift({ nama: found.nama, role: found.role, ip: userIP, time: logTime });
+                syncToSheets('write', 'logs', [found.nama, found.role, userIP, logTime]);
+
                 document.getElementById('loginPage').style.display = 'none';
                 document.getElementById('mainSystem').style.display = 'flex';
                 document.getElementById('userName').innerText = found.nama;
@@ -275,7 +308,6 @@
             }
         }
 
-        // --- HISTORY RENDER ---
         function renderHistoryPage(filterData = null) {
             const view = document.getElementById('mainView');
             const dataToRender = filterData || dbHistory;
@@ -295,7 +327,6 @@
             renderHistoryPage(filtered);
         }
 
-        // --- CORE FUNCTIONS ---
         function startIzin(n, m) {
             tSec=0; tLimit=parseInt(m)*60; tAct=n;
             document.getElementById('timerName').innerText="Izin: "+n;
@@ -322,12 +353,13 @@
 
         function recordHistory(kat, stat, dur = "-") {
             const now = new Date();
-            dbHistory.unshift({
+            const payload = {
                 nama: currentUser.nama, kategori: kat, status: stat, durasi: dur,
                 tgl: now.toLocaleDateString('id-ID'), waktu: now.toLocaleTimeString('id-ID'),
                 isoDate: now.toISOString().split('T')[0]
-            });
-            localStorage.setItem('hr_final_history', JSON.stringify(dbHistory));
+            };
+            dbHistory.unshift(payload);
+            syncToSheets('write', 'history', [payload.nama, payload.kategori, payload.status, payload.tgl, payload.waktu, payload.durasi, payload.isoDate]);
         }
 
         function submitAbsenHadir() {
@@ -335,15 +367,12 @@
             const now = new Date();
             const currentTime = now.getHours() + ":" + now.getMinutes().toString().padStart(2,'0');
             const limit = dbSettings[div];
-            
             let status = (currentTime > limit) ? "Terlambat" : "Tepat Waktu";
             let diff = "-";
-            
             if(status === "Terlambat") {
                 const [h1, m1] = currentTime.split(':'), [h2, m2] = limit.split(':');
                 diff = ((h1*60 + parseInt(m1)) - (h2*60 + parseInt(m2))) + " Menit";
             }
-
             localStorage.setItem('status_absen_' + currentUser.user, 'true');
             recordHistory("Absen Hadir", status, diff);
             closeAbsenModal();
@@ -353,10 +382,10 @@
         // --- UTILS ---
         function openEditModal(i) { const u = dbUsers[i]; document.getElementById('editIdx').value=i; document.getElementById('en').value=u.nama; document.getElementById('eu').value=u.user; document.getElementById('es').value=u.sandi; document.getElementById('er').value=u.role; document.getElementById('editModal').style.display='flex'; }
         function closeEditModal() { document.getElementById('editModal').style.display='none'; }
-        function saveEdit() { const i=document.getElementById('editIdx').value; dbUsers[i].nama=document.getElementById('en').value; dbUsers[i].user=document.getElementById('eu').value; dbUsers[i].sandi=document.getElementById('es').value; dbUsers[i].role=document.getElementById('er').value; localStorage.setItem('hr_final_users', JSON.stringify(dbUsers)); closeEditModal(); showPage('karyawan'); }
+        function saveEdit() { const i=document.getElementById('editIdx').value; dbUsers[i].nama=document.getElementById('en').value; dbUsers[i].user=document.getElementById('eu').value; dbUsers[i].sandi=document.getElementById('es').value; dbUsers[i].role=document.getElementById('er').value; syncToSheets('write', 'users', [dbUsers[i].nama, dbUsers[i].user, dbUsers[i].sandi, dbUsers[i].role]); closeEditModal(); showPage('karyawan'); }
         function saveS(k) { dbSettings[k]=document.getElementById('s_'+k).value; localStorage.setItem('hr_final_settings', JSON.stringify(dbSettings)); alert("Saved!"); }
-        function addK() { const n=document.getElementById('nk').value, u=document.getElementById('uk').value, s=document.getElementById('sk').value, r=document.getElementById('rk').value; if(n&&u&&s){ dbUsers.push({nama:n, user:u, sandi:s, role:r}); localStorage.setItem('hr_final_users', JSON.stringify(dbUsers)); showPage('karyawan'); } }
-        function delK(i) { if(confirm("Hapus?")){ dbUsers.splice(i,1); localStorage.setItem('hr_final_users', JSON.stringify(dbUsers)); showPage('karyawan'); } }
+        function addK() { const n=document.getElementById('nk').value, u=document.getElementById('uk').value, s=document.getElementById('sk').value, r=document.getElementById('rk').value; if(n&&u&&s){ dbUsers.push({nama:n, user:u, sandi:s, role:r}); syncToSheets('write', 'users', [n, u, s, r]); showPage('karyawan'); } }
+        function delK(i) { if(confirm("Hapus?")){ dbUsers.splice(i,1); showPage('karyawan'); } }
         function addIP() { const ip=document.getElementById('newIP').value; if(ip){ allowedIPs.push(ip); localStorage.setItem('hr_allowed_ips', JSON.stringify(allowedIPs)); showPage('logs'); } }
         function delIP(i) { allowedIPs.splice(i,1); localStorage.setItem('hr_allowed_ips', JSON.stringify(allowedIPs)); showPage('logs'); }
         function toggleIPSec() { ipSecurityActive=!ipSecurityActive; localStorage.setItem('hr_ip_security', ipSecurityActive); showPage('logs'); }
