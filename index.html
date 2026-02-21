@@ -66,7 +66,6 @@
         .filter-group { display: flex; flex-direction: column; gap: 5px; }
         .filter-group label { font-size: 10px; color: var(--accent); font-weight: 600; }
 
-        /* Secret Reset Trigger Style */
         #secretReset { cursor: default; user-select: none; }
     </style>
 </head>
@@ -78,7 +77,7 @@
         <form onsubmit="handleLogin(event)">
             <input type="text" id="uIn" class="input-box" style="width:100%; margin-bottom:15px;" placeholder="User ID" required>
             <input type="password" id="pIn" class="input-box" style="width:100%; margin-bottom:20px;" placeholder="Password" required>
-            <button type="submit" class="btn btn-accent" style="width:100%">LOGIN</button>
+            <button type="submit" id="btnLogin" class="btn btn-accent" style="width:100%">LOGIN</button>
         </form>
         <p style="font-size: 9px; margin-top: 15px; opacity: 0.5;">ULTIMATE SYSTEM v2.6.1</p>
     </div>
@@ -145,8 +144,7 @@
     </div>
 
     <script>
-        // --- CONFIGURATION ---
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwMrWBhpTDz_vAlb-AEP5GUoKeXelqhuINyxLBFHn32MuxZJF10yUWbzmC4MxsZ_W7P/exec"; // Ganti dengan URL deployment anda
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwMrWBhpTDz_vAlb-AEP5GUoKeXelqhuINyxLBFHn32MuxZJF10yUWbzmC4MxsZ_W7P/exec"; 
 
         let dbUsers = JSON.parse(localStorage.getItem('hr_users_local')) || [];
         let dbLogs = [];
@@ -164,7 +162,6 @@
         let userIP = "Detecting..."; 
         let resetCounter = 0;
 
-        // --- EMERGENCY RESET FUNCTION ---
         function triggerReset() {
             resetCounter++;
             if(resetCounter >= 5) {
@@ -175,7 +172,7 @@
                     dbUsers.push({ nama: "Super Admin", user: "admin", sandi: "admin123", role: "admin" });
                     localStorage.setItem('hr_users_local', JSON.stringify(dbUsers));
                 }
-                alert("EMERGENCY RESET: Keamanan IP dimatikan. User 'admin' dengan pass 'admin123' diaktifkan.");
+                alert("EMERGENCY RESET: Keamanan IP dimatikan. User 'admin' diaktifkan.");
                 resetCounter = 0;
             }
         }
@@ -194,24 +191,17 @@
         }
 
         async function loadAllData() {
-            // Load default admin jika kosong
-            if(dbUsers.length === 0) {
-                dbUsers = [{ nama: "Super Admin", user: "admin", sandi: "admin123", role: "admin" }];
-            }
-
             try {
                 const u = await syncToSheets('read', 'users');
                 if (u && u.length > 0) {
                     dbUsers = u;
                     localStorage.setItem('hr_users_local', JSON.stringify(dbUsers));
                 }
-
                 const h = await syncToSheets('read', 'history');
                 if (h) dbHistory = h;
-
                 const l = await syncToSheets('read', 'logs');
                 if (l) dbLogs = l;
-            } catch (e) { console.log("Offline mode, using local storage."); }
+            } catch (e) { console.log("Offline mode."); }
         }
 
         async function getIP() {
@@ -228,14 +218,24 @@
 
         async function handleLogin(e) {
             e.preventDefault();
+            const btn = document.getElementById('btnLogin');
             const u = document.getElementById('uIn').value;
             const p = document.getElementById('pIn').value;
 
+            btn.innerText = "VERIFYING...";
+            btn.disabled = true;
+
+            // AMBIL DATA TERBARU DARI SHEET SEBELUM LOGIN
+            await loadAllData(); 
+            
             if(ipSecurityActive && !allowedIPs.includes(userIP)) {
-                return alert("Akses Ditolak! IP " + userIP + " Tidak Terdaftar dalam Whitelist.");
+                btn.innerText = "LOGIN";
+                btn.disabled = false;
+                return alert("Akses Ditolak! IP " + userIP + " Tidak Terdaftar.");
             }
             
-            const found = dbUsers.find(x => x.user === u && x.sandi === p);
+            const found = dbUsers.find(x => x.user.toString() === u.toString() && x.sandi.toString() === p.toString());
+            
             if(found) {
                 currentUser = found;
                 const logTime = new Date().toLocaleString('id-ID');
@@ -254,11 +254,12 @@
                 
                 showPage('dashboard');
             } else { 
-                alert("Login Gagal! Periksa User ID dan Password."); 
+                alert("Login Gagal! Akun tidak ditemukan atau sandi salah."); 
+                btn.innerText = "LOGIN";
+                btn.disabled = false;
             }
         }
 
-        // --- SISTEM HALAMAN ---
         function showPage(page) {
             const view = document.getElementById('mainView');
             document.querySelectorAll('.sidebar li').forEach(l => l.classList.remove('active'));
@@ -320,7 +321,7 @@
             }
         }
 
-        // --- RENDERER FUNCTIONS ---
+        // --- MANAJEMEN KARYAWAN ---
         function renderKaryawanPage() {
             const view = document.getElementById('mainView');
             let rows = dbUsers.map((k, i) => `
@@ -346,15 +347,33 @@
                 </div>`;
         }
 
+        async function addK() {
+            const n=document.getElementById('nk').value, u=document.getElementById('uk').value, s=document.getElementById('sk').value, r=document.getElementById('rk').value;
+            if(n && u && s){
+                await syncToSheets('write', 'users', [n, u, s, r]);
+                await loadAllData(); 
+                renderKaryawanPage();
+                alert("Karyawan berhasil ditambahkan ke Cloud!");
+            } else { alert("Isi semua data!"); }
+        }
+
+        function delK(i) {
+            if(confirm("Hapus karyawan ini secara permanen?")){
+                dbUsers.splice(i,1);
+                localStorage.setItem('hr_users_local', JSON.stringify(dbUsers));
+                renderKaryawanPage();
+            }
+        }
+
+        // --- SECURITY LOGS & WHITELIST ---
         function renderLogsPage() {
             const view = document.getElementById('mainView');
             view.innerHTML = `
                 <h1>Security & Whitelist</h1>
                 <div class="glass" style="padding:20px; margin-top:20px; border:1px solid var(--accent)">
                     <h3>Whitelist IP Control</h3>
-                    <p style="font-size:11px; margin-bottom:10px; opacity:0.8;">Hanya IP terdaftar yang bisa login jika Security ON.</p>
                     <div style="display:flex; gap:10px; margin-bottom:15px;">
-                        <input id="newIP" class="input-box" style="flex:1" placeholder="Masukkan IP (Contoh: 114.124...)">
+                        <input id="newIP" class="input-box" style="flex:1" placeholder="Masukkan IP">
                         <button class="btn btn-accent" onclick="addIP()">DAFTARKAN</button>
                         <button class="btn ${ipSecurityActive?'btn-danger':'btn-accent'}" onclick="toggleIPSec()">SECURITY: ${ipSecurityActive?'ON':'OFF'}</button>
                     </div>
@@ -366,26 +385,6 @@
                     <h3>Login Logs</h3>
                     <table><thead><tr><th>Nama</th><th>Alamat IP</th><th>Waktu Login</th></tr></thead><tbody>${dbLogs.map(l=>`<tr><td>${l.nama}</td><td>${l.ip}</td><td>${l.time}</td></tr>`).join('')}</tbody></table>
                 </div>`;
-        }
-
-        // --- FUNGSI OPERASIONAL ---
-        function addK() {
-            const n=document.getElementById('nk').value, u=document.getElementById('uk').value, s=document.getElementById('sk').value, r=document.getElementById('rk').value;
-            if(n && u && s){
-                dbUsers.push({nama:n, user:u, sandi:s, role:r});
-                localStorage.setItem('hr_users_local', JSON.stringify(dbUsers));
-                syncToSheets('write', 'users', [n, u, s, r]);
-                renderKaryawanPage();
-                alert("Karyawan berhasil ditambahkan!");
-            } else { alert("Isi semua data!"); }
-        }
-
-        function delK(i) {
-            if(confirm("Hapus karyawan ini secara permanen?")){
-                dbUsers.splice(i,1);
-                localStorage.setItem('hr_users_local', JSON.stringify(dbUsers));
-                renderKaryawanPage();
-            }
         }
 
         function addIP() {
@@ -409,11 +408,7 @@
             renderLogsPage();
         }
 
-        // --- INITIALIZATION ---
-        getIP();
-        loadAllData();
-
-        // (Fungsi timer, absen hadir, dll tetap berfungsi sesuai kode sebelumnya)
+        // --- SISTEM IZIN & TIMER ---
         let tInterval, tSec = 0, tLimit = 0, tAct = "";
         function startIzin(n, m) {
             tSec=0; tLimit=parseInt(m)*60; tAct=n;
@@ -450,6 +445,7 @@
             syncToSheets('write', 'history', [payload.nama, payload.kategori, payload.status, payload.tgl, payload.waktu, payload.durasi, payload.isoDate]);
         }
 
+        // --- ABSENSI ---
         function openAbsenModal() { document.getElementById('absenModal').style.display='flex'; }
         function closeAbsenModal() { document.getElementById('absenModal').style.display='none'; }
         
@@ -478,7 +474,6 @@
             alert("Berhasil Absen Pulang!");
         }
 
-        // Fungsi Filter History
         function renderHistoryPage(filterData = null) {
             const view = document.getElementById('mainView');
             const dataToRender = filterData || dbHistory;
@@ -521,18 +516,21 @@
             document.getElementById('editModal').style.display='flex'; 
         }
         function closeEditModal() { document.getElementById('editModal').style.display='none'; }
-        function saveEdit() { 
+        async function saveEdit() { 
             const i=document.getElementById('editIdx').value; 
             dbUsers[i].nama=document.getElementById('en').value; 
             dbUsers[i].user=document.getElementById('eu').value; 
             dbUsers[i].sandi=document.getElementById('es').value; 
             dbUsers[i].role=document.getElementById('er').value; 
-            localStorage.setItem('hr_users_local', JSON.stringify(dbUsers));
-            syncToSheets('write', 'users', [dbUsers[i].nama, dbUsers[i].user, dbUsers[i].sandi, dbUsers[i].role]); 
+            await syncToSheets('write', 'users', [dbUsers[i].nama, dbUsers[i].user, dbUsers[i].sandi, dbUsers[i].role]); 
+            await loadAllData();
             closeEditModal(); 
             renderKaryawanPage(); 
         }
 
+        // Init
+        getIP();
+        loadAllData();
     </script>
 </body>
 </html>
