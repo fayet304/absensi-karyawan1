@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Absensi - Sistem Manajemen Kehadiran</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Modal Overlay -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Tambah Karyawan</h3>
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Dynamic modal content -->
+            </div>
+            <div class="modal-footer" id="modalFooter">
+                <button class="btn btn-secondary" onclick="closeModal()">Batal</button>
+                <button class="btn btn-primary" id="modalSaveBtn">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fas fa-clipboard-user"></i>
+                </div>
+                <div>
+                    <h2 class="sidebar-title">AbsensiPro</h2>
+                    <span class="sidebar-subtitle">Manajemen Kehadiran</span>
+                </div>
+            </div>
+            
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-page="dashboard">
+                            <i class="fas fa-home"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-page="karyawan">
+                            <i class="fas fa-users"></i>
+                            Data Karyawan
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-page="absensi">
+                            <i class="fas fa-clipboard-check"></i>
+                            Absensi
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-page="rekap">
+                            <i class="fas fa-chart-bar"></i>
+                            Rekap
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-page="laporan">
+                            <i class="fas fa-file-alt"></i>
+                            Laporan
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <h1 id="pageTitle">Dashboard</h1>
+                    <p id="pageSubtitle">Selamat datang di sistem manajemen kehadiran</p>
+                </div>
+                <div class="header-right">
+                    <div class="date-range">
+                        <input type="date" class="form-input" id="filterDateFrom" style="width: auto;">
+                        <span>-</span>
+                        <input type="date" class="form-input" id="filterDateTo" style="width: auto;">
+                    </div>
+                    <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+                        <i class="fas fa-sun sun-icon"></i>
+                        <i class="fas fa-moon moon-icon"></i>
+                    </div>
+                    <button class="btn btn-primary" id="exportBtn">
+                        <i class="fas fa-download"></i>
+                        Export
+                    </button>
+                </div>
+            </header>
+
+            <!-- Page: Dashboard -->
+            <section id="page-dashboard" class="page-content">
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon total">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <span class="stat-change up">
+                                <i class="fas fa-arrow-up"></i> 5%
+                            </span>
+                        </div>
+                        <div class="stat-value" id="statTotal">50</div>
+                        <div class="stat-label">Total Karyawan</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon hadir">
+                                <i class="fas fa-user-check"></i>
+                            </div>
+                            <span class="stat-change up">
+                                <i class="fas fa-arrow-up"></i> 12%
+                            </span>
+                        </div>
+                        <div class="stat-value" id="statHadir">42</div>
+                        <div class="stat-label">Hadir Hari Ini</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon izin">
+                                <i class="fas fa-file-signature"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="statIzin">5</div>
+                        <div class="stat-label">Izin</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon sakit">
+                                <i class="fas fa-procedures"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="statSakit">2</div>
+                        <div class="stat-label">Sakit</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon alpa">
+                                <i class="fas fa-user-times"></i>
+                            </div>
+                            <span class="stat-change down">
+                                <i class="fas fa-arrow-down"></i> 3%
+                            </span>
+                        </div>
+                        <div class="stat-value" id="statAlpa">1</div>
+                        <div class="stat-label">Alpa</div>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="charts-grid">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-chart-pie"></i>
+                                Distribusi Kehadiran
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="attendanceChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-chart-line"></i>
+                                Tren Kehadiran Mingguan
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="weeklyChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-clock"></i>
+                            Aktivitas Terbaru
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Karyawan</th>
+                                        <th>Status</th>
+                                        <th>Jam Masuk</th>
+                                        <th>Jam Keluar</th>
+                                        <th>Tanggal</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentActivityBody">
+                                    <!-- Dynamic content -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Page: Data Karyawan -->
+            <section id="page-karyawan" class="page-content hidden">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-users"></i>
+                            Daftar Karyawan
+                        </h3>
+                        <div class="card-actions">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" class="form-input" id="searchKaryawan" placeholder="Cari karyawan..." style="width: 250px;">
+                            </div>
+                            <button class="btn btn-primary" onclick="showAddKaryawanModal()">
+                                <i class="fas fa-plus"></i>
+                                Tambah Karyawan
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Karyawan</th>
+                                        <th>Departemen</th>
+                                        <th>Jabatan</th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="karyawanTableBody">
+                                    <!-- Dynamic content -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="pagination">
+                        <div class="pagination-info">
+                            Menampilkan <span id="karyawanShowStart">1</span>-<span id="karyawanShowEnd">10</span> dari <span id="karyawanTotal">50</span> karyawan
+                        </div>
+                        <div class="pagination-btns" id="karyawanPagination">
+                            <!-- Dynamic pagination -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Page: Absensi -->
+            <section id="page-absensi" class="page-content hidden">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-clipboard-check"></i>
+                            Input Absensi
+                        </h3>
+                        <div class="card-actions">
+                            <select class="form-select" id="filterDepartemen" style="width: auto;">
+                                <option value="">Semua Departemen</option>
+                                <option value="IT">IT</option>
+                                <option value="HRD">HRD</option>
+                                <option value="Finance">Finance</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Operations">Operations</option>
+                            </select>
+                            <input type="date" class="form-input" id="filterTanggalAbsensi" style="width: auto;">
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="filters-row mb-2">
+                            <div class="filter-group">
+                                <label>Status Cepat</label>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <button class="btn btn-sm btn-success" onclick="setAllStatus('hadir')">
+                                        <i class="fas fa-check"></i> Semua Hadir
+                                    </button>
+                                    <button class="btn btn-sm btn-secondary" onclick="clearAllStatus()">
+                                        <i class="fas fa-undo"></i> Reset
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Karyawan</th>
+                                        <th>Departemen</th>
+                                        <th>Jam Masuk</th>
+                                        <th>Jam Keluar</th>
+                                        <th>Status</th>
+                                        <th>Catatan</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="absensiTableBody">
+                                    <!-- Dynamic content -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="pagination">
+                        <div class="pagination-info">
+                            Menampilkan <span id="absensiShowStart">1</span>-<span id="absensiShowEnd">10</span> dari <span id="absensiTotal">50</span> karyawan
+                        </div>
+                        <div class="pagination-btns" id="absensiPagination">
+                            <!-- Dynamic pagination -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Page: Rekap -->
+            <section id="page-rekap" class="page-content hidden">
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="rekap-mingguan">Rekap Mingguan</button>
+                    <button class="tab-btn" data-tab="rekap-bulanan">Rekap Bulanan</button>
+                </div>
+
+                <div id="tab-rekap-mingguan" class="tab-content">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-calendar-week"></i>
+                                Rekap Mingguan
+                            </h3>
+                            <div class="card-actions">
+                                <select class="form-select" id="weekSelect" style="width: auto;">
+                                    <!-- Dynamic weeks -->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Karyawan</th>
+                                            <th>Hadir</th>
+                                            <th>Izin</th>
+                                            <th>Sakit</th>
+                                            <th>Alpa</th>
+                                            <th>Total Jam</th>
+                                            <th>Persentase</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="rekapMingguanBody">
+                                        <!-- Dynamic content -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-rekap-bulanan" class="tab-content hidden">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-calendar-alt"></i>
+                                Rekap Bulanan
+                            </h3>
+                            <div class="card-actions">
+                                <select class="form-select" id="monthSelect" style="width: auto;">
+                                    <option value="1">Januari</option>
+                                    <option value="2">Februari</option>
+                                    <option value="3">Maret</option>
+                                    <option value="4">April</option>
+                                    <option value="5">Mei</option>
+                                    <option value="6">Juni</option>
+                                    <option value="7">Juli</option>
+                                    <option value="8">Agustus</option>
+                                    <option value="9">September</option>
+                                    <option value="10">Oktober</option>
+                                    <option value="11">November</option>
+                                    <option value="12">Desember</option>
+                                </select>
+                                <select class="form-select" id="yearSelect" style="width: auto;">
+                                    <option value="2024">2024</option>
+                                    <option value="2025">2025</option>
+                                    <option value="2026" selected>2026</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Karyawan</th>
+                                            <th>Hadir</th>
+                                            <th>Izin</th>
+                                            <th>Sakit</th>
+                                            <th>Alpa</th>
+                                            <th>Total Jam</th>
+                                            <th>Persentase</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="rekapBulananBody">
+                                        <!-- Dynamic content -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Page: Laporan -->
+            <section id="page-laporan" class="page-content hidden">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-file-alt"></i>
+                            Generate Laporan
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="filters-row mb-2">
+                            <div class="filter-group">
+                                <label>Jenis Laporan</label>
+                                <select class="form-select" id="reportType">
+                                    <option value="harian">Laporan Harian</option>
+                                    <option value="mingguan">Laporan Mingguan</option>
+                                    <option value="bulanan">Laporan Bulanan</option>
+                                    <option value="karyawan">Laporan Per Karyawan</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label>Departemen</label>
+                                <select class="form-select" id="reportDepartemen">
+                                    <option value="">Semua Departemen</option>
+                                    <option value="IT">IT</option>
+                                    <option value="HRD">HRD</option>
+                                    <option value="Finance">Finance</option>
+                                    <option value="Marketing">Marketing</option>
+                                    <option value="Operations">Operations</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label>Format</label>
+                                <select class="form-select" id="reportFormat">
+                                    <option value="pdf">PDF</option>
+                                    <option value="excel">Excel (CSV)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <button class="btn btn-primary" onclick="generateReport()">
+                                <i class="fas fa-file-download"></i>
+                                Generate Laporan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-history"></i>
+                            Riwayat Laporan
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nama Laporan</th>
+                                        <th>Tanggal Generate</th>
+                                        <th>Format</th>
+                                        <th>Ukuran</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="reportHistoryBody">
+                                    <tr>
+                                        <td>Laporan Absensi Maret 2026</td>
+                                        <td>12 Maret 2026, 10:30</td>
+                                        <td><span class="status-badge hadir">PDF</span></td>
+                                        <td>245 KB</td>
+                                        <td>
+                                            <button class="action-btn"><i class="fas fa-download"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Rekap Mingguan #10</td>
+                                        <td>10 Maret 2026, 14:15</td>
+                                        <td><span class="status-badge izin">CSV</span></td>
+                                        <td>89 KB</td>
+                                        <td>
+                                            <button class="action-btn"><i class="fas fa-download"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
